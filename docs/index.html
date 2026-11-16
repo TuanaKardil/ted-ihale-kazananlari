@@ -226,7 +226,7 @@ const S={grades:new Set(["A"]),countries:new Set(),onlySite:false,q:"",period:30
 function enrichRow(r){
   const en=E.notices[r.pub]||{};
   r.titleTr=en.titleTr||""; r.short=en.short||""; r.detail=en.detail||"";
-  r.winners.forEach(w=>{const c=E.companies[keyOf(w)]||{}; w.about=c.about||""; if(!w.website&&c.website){w.website=c.website;w.websiteSrc="web araması"} w.sector=c.sector||"";});
+  r.winners.forEach(w=>{const c=E.companies[keyOf(w)]||{}; w.about=c.about||""; if(!w.website&&c.website){w.website=c.website;w.websiteSrc=c.websiteNote||"web araması"} w.sector=c.sector||"";});
   r.hasSite=r.winners.some(w=>w.website);
   r.blob=[r.title,r.titleTr,r.short,r.city,r.place,r.buyer,cname(r.country),...r.winners.map(w=>w.name+" "+(w.website||"")+" "+(w.city||""))].join(" ").toLowerCase();
 }

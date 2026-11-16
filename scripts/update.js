@@ -7,7 +7,7 @@ const { fetchRows, ymd, PRIORITY_COUNTRIES } = require("../lib/ted");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "docs", "data.json");
-const GEO = path.join(ROOT, "data", "geocache.json");
+const GEO = path.join(ROOT, "data", "geocache-v2.json");
 const WINDOW_DAYS = 30; // asla bir aydan geriye gitme
 
 const ISO2 = { AUT:"at",BEL:"be",BGR:"bg",HRV:"hr",CYP:"cy",CZE:"cz",DNK:"dk",EST:"ee",FIN:"fi",FRA:"fr",DEU:"de",GRC:"gr",HUN:"hu",IRL:"ie",ITA:"it",LVA:"lv",LTU:"lt",LUX:"lu",MLT:"mt",NLD:"nl",POL:"pl",PRT:"pt",ROU:"ro",SVK:"sk",SVN:"si",ESP:"es",SWE:"se",NOR:"no",CHE:"ch",ISL:"is",LIE:"li",MKD:"mk",SRB:"rs",MNE:"me",ALB:"al",MDA:"md",UKR:"ua",GEO:"ge",TUR:"tr",BIH:"ba",GBR:"gb" };
@@ -27,7 +27,7 @@ async function nominatim(params) {
 
 function label(hit, fallbackCity) {
   const a = (hit && hit.address) || {};
-  const town = a.city_district || a.suburb || a.town || a.city || a.village || a.municipality || fallbackCity || "";
+  const town = a.town || a.city || a.village || a.municipality || fallbackCity || a.suburb || "";
   const region = a.county || a.state_district || a.state || "";
   return [town, region && region !== town ? region : ""].filter(Boolean).join(", ");
 }

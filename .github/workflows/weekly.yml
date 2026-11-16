@@ -30,7 +30,7 @@ jobs:
         run: |
           git config user.name "ted-bot"
           git config user.email "ted-bot@users.noreply.github.com"
-          git add docs/data.json data/geocache.json
+          git add docs/data.json data/
           git diff --cached --quiet || git commit -m "Haftalik TED verisi: $(date -u +%F)"
           git pull --rebase
           git push
