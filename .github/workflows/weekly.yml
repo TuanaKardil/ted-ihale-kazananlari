@@ -4,30 +4,33 @@ on:
   schedule:
     - cron: "0 4 * * 1"   # Her pazartesi 07:00 (Istanbul)
   workflow_dispatch:
-    inputs:
-      days:
-        description: "Kac gun geriye bakilsin (bos birakilirsa 21)"
-        required: false
+  push:
+    branches: [main]
+    paths: ["lib/**", "scripts/**", ".github/workflows/**"]
 
 permissions:
   contents: write
 
+concurrency:
+  group: ted-update
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: TED verisini cek ve puanla
+      - name: TED verisini cek, puanla, konumlari bul (son 30 gun)
         run: node scripts/update.js
-        env:
-          DAYS: ${{ github.event.inputs.days }}
       - name: Degisiklikleri kaydet
         run: |
           git config user.name "ted-bot"
           git config user.email "ted-bot@users.noreply.github.com"
-          git add docs/data.json
+          git add docs/data.json data/geocache.json
           git diff --cached --quiet || git commit -m "Haftalik TED verisi: $(date -u +%F)"
+          git pull --rebase
           git push
