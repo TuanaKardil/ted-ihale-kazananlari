@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AB İhale Kazananları · Radyatör & Havlupan</title>
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--ink:#1b1f24;--muted:#667085;--line:#e4e7ec;--acc:#b4441c;--a:#127a4b;--b:#b7791f;--c:#98a2b3}
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:#1b1f24;color:#fff;padding:18px 24px}
+  header h1{margin:0;font-size:19px;font-weight:650}
+  header p{margin:4px 0 0;color:#c4cad3;font-size:13px}
+  main{max-width:1320px;margin:0 auto;padding:18px 24px 60px}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+  select,input[type=search],input[type=date],button{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  button{cursor:pointer}
+  button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer;user-select:none;background:#fff}
+  .chip input{margin:0}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .stat b{display:block;font-size:22px}
+  .stat span{color:var(--muted);font-size:12px}
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+  th{background:#fafbfc;font-size:12px;color:var(--muted);font-weight:600;position:sticky;top:0}
+  tr:last-child td{border-bottom:0}
+  .g{display:inline-block;min-width:44px;text-align:center;font-weight:700;border-radius:6px;padding:3px 6px;color:#fff}
+  .gA{background:var(--a)}.gB{background:var(--b)}.gC{background:var(--c)}
+  .win{font-weight:600}
+  .site a{color:var(--acc);text-decoration:none;font-size:13px}
+  .src{color:var(--muted);font-size:11px}
+  .why{color:var(--muted);font-size:12px;margin-top:3px}
+  .prio{background:#fff4e5;color:#9a4d00;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:4px}
+  .muted{color:var(--muted)}
+  .num{white-space:nowrap;text-align:right}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  details.help{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:14px}
+  details.help summary{cursor:pointer;font-weight:600}
+  details.help li{margin:3px 0}
+  @media (max-width:800px){.hide-m{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>AB ihale kazananları: radyatör, havlupan ve tesisat işleri</h1>
+  <p>Kaynak: TED (AB resmi ihale bülteni), sözleşme sonuç ilanları. Liste her pazartesi sabahı otomatik güncellenir. <span id="upd"></span></p>
+</header>
+<main>
+  <div class="bar">
+    <select id="period">
+      <option value="7">Son 7 gün</option>
+      <option value="prev">Önceki hafta (8-14 gün önce)</option>
+      <option value="30">Son 30 gün</option>
+      <option value="90">Son 90 gün</option>
+      <option value="custom">Özel tarih</option>
+    </select>
+    <span id="customWrap" style="display:none">
+      <input type="date" id="dFrom"> – <input type="date" id="dTo">
+    </span>
+    <label class="chip"><input type="checkbox" class="gr" value="A" checked> A: güçlü</label>
+    <label class="chip"><input type="checkbox" class="gr" value="B" checked> B: olası</label>
+    <label class="chip"><input type="checkbox" class="gr" value="C"> C: zayıf</label>
+    <select id="country"><option value="">Tüm ülkeler</option></select>
+    <label class="chip"><input type="checkbox" id="onlySite"> Sadece sitesi bulunanlar</label>
+    <input type="search" id="q" placeholder="Firma, iş, alıcı ara…" style="flex:1;min-width:180px">
+    <button id="csv">Excel/CSV indir</button>
+      </div>
+
+  <div class="stats" id="stats"></div>
+
+  <table>
+    <thead><tr>
+      <th>Puan</th><th>Kazanan firma</th><th>Kazandığı iş</th><th class="hide-m">Alıcı kurum</th><th class="num hide-m">Bedel</th><th class="hide-m">Yayın</th><th></th>
+    </tr></thead>
+    <tbody id="tb"><tr><td colspan="7" class="empty">Yükleniyor…</td></tr></tbody>
+  </table>
+
+  <details class="help">
+    <summary>Puanlama nasıl yapılıyor?</summary>
+    <ul>
+      <li><b>CPV kodu (en fazla 50):</b> radyatör/kazan 50, ısıtma ekipmanı ve merkezi ısıtma tesisatı 45, ısıtma-iklimlendirme tesisatı 35, banyo armatürleri 35, sıhhi tesisat 30, konut/okul/hastane/otel inşaatı ve renovasyon 15, sadece havalandırma/klima 10.</li>
+      <li><b>İhale başlığı (en fazla 45):</b> 24 dilde radyatör/havlupan kelimesi +30, ısıtma +20, sıhhi tesisat/banyo +15, konut/okul/hastane/otel/yurt +10. Sadece havalandırma, asansör, elektrik gibi işlerse −15.</li>
+      <li><b>Öncelikli ülke:</b> Romanya +15.</li>
+      <li><b>Not:</b> A = 55 ve üzeri (doğrudan hedef), B = 40-54 (incelemeye değer), C = 40 altı.</li>
+      <li><b>Web sitesi:</b> TED'deki firma adresinden ya da firmanın kurumsal e-posta alan adından çıkarılır. Gmail gibi genel adresler kullanılmaz. Sitesi boş olanlar bir sonraki aşamada aranacak.</li>
+      <li>Liste son 1 yılın sonuçlarını saklar; dönem seçicisiyle geriye bakabilirsiniz.</li>
+      <li>Bir ihalede birden fazla kazanan varsa (lotlu işler) her firma ayrı satırdır; bedel ilanın toplam bedelidir.</li>
+    </ul>
+  </details>
+</main>
+<script>
+const CN={DEU:"Almanya",FRA:"Fransa",POL:"Polonya",ROU:"Romanya",CZE:"Çekya",SVN:"Slovenya",SWE:"İsveç",ESP:"İspanya",IRL:"İrlanda",AUT:"Avusturya",LTU:"Litvanya",CHE:"İsviçre",HRV:"Hırvatistan",DNK:"Danimarka",NLD:"Hollanda",BGR:"Bulgaristan",LVA:"Letonya",EST:"Estonya",FIN:"Finlandiya",ITA:"İtalya",SVK:"Slovakya",NOR:"Norveç",BEL:"Belçika",MLT:"Malta",HUN:"Macaristan",PRT:"Portekiz",LUX:"Lüksemburg",GRC:"Yunanistan",CYP:"Kıbrıs",ISL:"İzlanda",MKD:"Kuzey Makedonya",SRB:"Sırbistan",MNE:"Karadağ",ALB:"Arnavutluk",MDA:"Moldova",UKR:"Ukrayna",GEO:"Gürcistan",TUR:"Türkiye",LIE:"Lihtenştayn",BIH:"Bosna Hersek"};
+const cn=c=>CN[c]||c;
+let DATA=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate=d=>d?d.split("-").reverse().join("."):"";
+const ymd=d=>d.toISOString().slice(0,10);
+function range(){
+  const p=$("#period").value,t=new Date();
+  if(p==="custom")return{from:$("#dFrom").value,to:$("#dTo").value};
+  if(p==="prev"){const a=new Date(t),b=new Date(t);a.setDate(a.getDate()-14);b.setDate(b.getDate()-8);return{from:ymd(a),to:ymd(b)}}
+  const a=new Date(t);a.setDate(a.getDate()-Number(p));return{from:ymd(a),to:ymd(t)};
+}
+async function load(){
+  try{
+    const r=await fetch("data.json?v="+Date.now());const j=await r.json();
+    DATA=j;
+    const u=new Date(j.updatedAt);
+    $("#upd").textContent="Son güncelleme: "+u.toLocaleDateString("tr-TR")+" "+u.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+    const cs=[...new Set(j.rows.map(x=>x.country))].sort((a,b)=>cn(a).localeCompare(cn(b),"tr"));
+    $("#country").innerHTML='<option value="">Tüm ülkeler</option>'+cs.map(c=>`<option value="${c}">${esc(cn(c))}</option>`).join("");
+    render();
+  }catch(e){$("#tb").innerHTML=`<tr><td colspan="7" class="empty">Veri yüklenemedi: ${esc(e.message)}</td></tr>`}
+}
+function filtered(){
+  if(!DATA)return[];
+  const gs=[...document.querySelectorAll(".gr:checked")].map(x=>x.value);
+  const c=$("#country").value,q=$("#q").value.trim().toLowerCase(),os=$("#onlySite").checked;
+  const {from,to}=range();
+  return DATA.rows.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to)&&gs.includes(r.grade)&&(!c||r.country===c)&&(!os||r.website)&&(!q||(r.winner+" "+r.title+" "+r.buyer+" "+(r.website||"")).toLowerCase().includes(q)));
+}
+function render(){
+  const rows=filtered();const {from,to}=range();const all=DATA.rows.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to));
+  const firms=new Set(rows.map(r=>r.winner.toLowerCase())).size;
+  const prio=DATA.priorityCountries;
+  $("#stats").innerHTML=[
+    [all.filter(r=>r.grade==="A").length,"A: güçlü aday"],
+    [all.filter(r=>r.grade==="B").length,"B: olası aday"],
+    [firms,"Listede farklı firma"],
+    [rows.filter(r=>r.website).length+" / "+rows.length,"Sitesi bulunan"],
+    [new Set(all.map(r=>r.pub)).size,"Kazananı belli ilan ("+fmtDate(from)+" – "+fmtDate(to)+")"],
+  ].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
+  if(!rows.length){$("#tb").innerHTML='<tr><td colspan="7" class="empty">Bu filtrelerle sonuç yok.</td></tr>';return}
+  $("#tb").innerHTML=rows.map(r=>`<tr>
+    <td><span class="g g${r.grade}">${r.grade} ${r.score}</span></td>
+    <td><div class="win">${esc(r.winner)}</div>
+      <div class="site">${r.website?`<a href="${esc(r.website)}" target="_blank" rel="noopener">${esc(r.website.replace("https://",""))}</a> <span class="src">(${esc(r.websiteSrc)})</span>`:'<span class="muted">site bulunamadı</span>'}</div>
+      <div class="src">${esc(cn(r.winnerCountry))}${r.multi?" · lotlu ihale":""}</div></td>
+    <td>${esc(r.title)}<div class="why">${esc(r.reasons.join(" · "))}</div></td>
+    <td class="hide-m">${esc(r.buyer)}<div class="src">${esc(r.city)}${r.city?", ":""}${esc(cn(r.country))}${prio.includes(r.country)?'<span class="prio">öncelikli</span>':""}</div></td>
+    <td class="num hide-m">${r.value?Number(r.value).toLocaleString("tr-TR",{maximumFractionDigits:0})+" "+esc(r.cur):'<span class="muted">-</span>'}</td>
+    <td class="hide-m">${fmtDate(r.date)}</td>
+    <td><a href="${r.url}" target="_blank" rel="noopener">TED</a></td></tr>`).join("");
+}
+function csv(){
+  const rows=filtered();const h=["Not","Puan","Kazanan firma","Firma ülkesi","Web sitesi","Site kaynağı","Kazandığı iş","Gerekçe","Alıcı kurum","Şehir","İhale ülkesi","Bedel","Para birimi","Yayın tarihi","TED linki"];
+  const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const lines=[h.map(q).join(";"),...rows.map(r=>[r.grade,r.score,r.winner,cn(r.winnerCountry),r.website,r.websiteSrc,r.title,r.reasons.join(", "),r.buyer,r.city,cn(r.country),r.value,r.cur,fmtDate(r.date),r.url].map(q).join(";"))];
+  const b=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`ted-kazananlar-${range().from}-${range().to}.csv`;a.click();
+}
+$("#period").onchange=()=>{const c=$("#period").value==="custom";$("#customWrap").style.display=c?"":"none";render()};
+$("#dFrom").onchange=$("#dTo").onchange=render;
+document.querySelectorAll(".gr").forEach(x=>x.onchange=render);
+$("#country").onchange=render;$("#onlySite").onchange=render;$("#q").oninput=render;
+$("#csv").onclick=csv;
+load();
+</script>
+</body>
+</html>
