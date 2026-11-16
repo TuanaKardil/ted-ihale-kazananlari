@@ -10,7 +10,7 @@ const KEEP_DAYS = 365;
 (async () => {
   let old = { rows: [] };
   if (fs.existsSync(FILE)) old = JSON.parse(fs.readFileSync(FILE, "utf8"));
-  const days = Number(process.env.DAYS || (old.rows.length ? 21 : 90));
+  const days = Number(process.env.DAYS || (old.rows.length ? 21 : 14));
   const now = new Date();
   const fromD = new Date(now); fromD.setDate(fromD.getDate() - days);
   const from = ymd(fromD), to = ymd(now);

@@ -51,6 +51,7 @@
   <div class="bar">
     <select id="period">
       <option value="7">Son 7 gün</option>
+      <option value="14" selected>Son 14 gün</option>
       <option value="prev">Önceki hafta (8-14 gün önce)</option>
       <option value="30">Son 30 gün</option>
       <option value="90">Son 90 gün</option>
@@ -59,8 +60,8 @@
     <span id="customWrap" style="display:none">
       <input type="date" id="dFrom"> – <input type="date" id="dTo">
     </span>
-    <label class="chip"><input type="checkbox" class="gr" value="A" checked> A: güçlü</label>
-    <label class="chip"><input type="checkbox" class="gr" value="B" checked> B: olası</label>
+    <label class="chip"><input type="checkbox" class="gr" value="A" checked> A: doğrudan ilgili</label>
+    <label class="chip"><input type="checkbox" class="gr" value="B"> B: tam paket / bakım</label>
     <label class="chip"><input type="checkbox" class="gr" value="C"> C: zayıf</label>
     <select id="country"><option value="">Tüm ülkeler</option></select>
     <label class="chip"><input type="checkbox" id="onlySite"> Sadece sitesi bulunanlar</label>
@@ -80,13 +81,14 @@
   <details class="help">
     <summary>Puanlama nasıl yapılıyor?</summary>
     <ul>
-      <li><b>CPV kodu (en fazla 50):</b> radyatör/kazan 50, ısıtma ekipmanı ve merkezi ısıtma tesisatı 45, ısıtma-iklimlendirme tesisatı 35, banyo armatürleri 35, sıhhi tesisat 30, konut/okul/hastane/otel inşaatı ve renovasyon 15, sadece havalandırma/klima 10.</li>
-      <li><b>İhale başlığı (en fazla 45):</b> 24 dilde radyatör/havlupan kelimesi +30, ısıtma +20, sıhhi tesisat/banyo +15, konut/okul/hastane/otel/yurt +10. Sadece havalandırma, asansör, elektrik gibi işlerse −15.</li>
-      <li><b>Öncelikli ülke:</b> Romanya +15.</li>
-      <li><b>Not:</b> A = 55 ve üzeri (doğrudan hedef), B = 40-54 (incelemeye değer), C = 40 altı.</li>
+      <li><b>A: doğrudan ilgili.</b> İhale başlığında radyatör/havlupan geçiyor, ya da başlıkta açıkça ısıtma veya sıhhi tesisat/banyo işi yazıyor ve ihalenin CPV kodu da ısıtma/tesisat. Bunlara doğrudan yazılabilir.</li>
+      <li><b>B: tam paket / bakım.</b> İhalenin CPV kodunda merkezi ısıtma veya tesisat var ama başlık genel (ör. okul binası yapımı, yani firma muhtemelen tam paket yükleniciyi). Ya da ısıtma bakım/çerçeve sözleşmesi. Bakarak seçmek gerekir.</li>
+      <li><b>C: ilgisiz.</b> Sadece havalandırma, klima, elektrik, asansör; ya da kanalizasyon, atık su, bölgesel ısıtma şebekesi, şantiye kış ısıtması gibi radyatör almayacak işler. Varsayılan olarak gizli.</li>
+      <li><b>Kelime taraması:</b> başlık 24 AB dilinde taranır (ör. Heizung, Sanitär, HKLS, chauffage, plomberie, ogrzewanie, grzejnik, încălzire, calorifer).</li>
+      <li><b>Puan</b> sadece sıralama içindir: CPV kodu, başlıktaki kelimeler, bina tipi (okul, hastane, konut, otel) ve öncelikli ülke (Romanya +15).</li>
       <li><b>Web sitesi:</b> TED'deki firma adresinden ya da firmanın kurumsal e-posta alan adından çıkarılır. Gmail gibi genel adresler kullanılmaz. Sitesi boş olanlar bir sonraki aşamada aranacak.</li>
-      <li>Liste son 1 yılın sonuçlarını saklar; dönem seçicisiyle geriye bakabilirsiniz.</li>
       <li>Bir ihalede birden fazla kazanan varsa (lotlu işler) her firma ayrı satırdır; bedel ilanın toplam bedelidir.</li>
+      <li>Liste son 1 yılın sonuçlarını saklar; dönem seçicisiyle geriye bakabilirsiniz.</li>
     </ul>
   </details>
 </main>
@@ -120,15 +122,15 @@ function filtered(){
   const gs=[...document.querySelectorAll(".gr:checked")].map(x=>x.value);
   const c=$("#country").value,q=$("#q").value.trim().toLowerCase(),os=$("#onlySite").checked;
   const {from,to}=range();
-  return DATA.rows.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to)&&gs.includes(r.grade)&&(!c||r.country===c)&&(!os||r.website)&&(!q||(r.winner+" "+r.title+" "+r.buyer+" "+(r.website||"")).toLowerCase().includes(q)));
+  return DATA.rows.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to)&&gs.includes(r.grade)&&(!c||r.country===c)&&(!os||r.website)&&(!q||(r.winner+" "+r.title+" "+r.buyer+" "+(r.website||"")).toLowerCase().includes(q))).sort((a,b)=>a.grade.localeCompare(b.grade)||b.score-a.score||b.date.localeCompare(a.date));
 }
 function render(){
   const rows=filtered();const {from,to}=range();const all=DATA.rows.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to));
   const firms=new Set(rows.map(r=>r.winner.toLowerCase())).size;
   const prio=DATA.priorityCountries;
   $("#stats").innerHTML=[
-    [all.filter(r=>r.grade==="A").length,"A: güçlü aday"],
-    [all.filter(r=>r.grade==="B").length,"B: olası aday"],
+    [all.filter(r=>r.grade==="A").length,"A: doğrudan ilgili"],
+    [all.filter(r=>r.grade==="B").length,"B: tam paket / bakım"],
     [firms,"Listede farklı firma"],
     [rows.filter(r=>r.website).length+" / "+rows.length,"Sitesi bulunan"],
     [new Set(all.map(r=>r.pub)).size,"Kazananı belli ilan ("+fmtDate(from)+" – "+fmtDate(to)+")"],
