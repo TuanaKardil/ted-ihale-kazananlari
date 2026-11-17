@@ -371,8 +371,9 @@ async function loadPeopleStatus(){
   const pd=pending();let ch=false;for(const k in pd){if((PST[k]&&PST[k].status=="done"&&new Date(PST[k].at)>new Date(pd[k]))||Date.now()-pd[k]>36e5*6){delete pd[k];ch=true}}if(ch)setPending(pd);
 }
 async function loadPeople(){try{PEOPLE=await fetch("people.json?v="+Date.now()).then(r=>r.ok?r.json():{})}catch(e){PEOPLE={}}}
-const NOTE=n=>`Hallo ${n}, ich bin Berk von der SRC Group, einem der größten Handtuchheizkörper-Hersteller der Türkei. Ich würde Sie gerne kennenlernen und mich mit Ihnen austauschen. Viele Grüße, Berk`;
-window.connectTo=(k,i)=>{const x=PEOPLE[k].people[i];const note=NOTE(x.name);
+const shortCo=c=>(c||"").replace(/\b(GmbH|KG|AG|SE|mbH|Co\.?|& Co\.?|Gesellschaft.*|EOOD|SARL|S\.?A\.?|Ges\.m\.b\.H\.?|Dipl\.\s?Ing\.?)\b/gi,"").replace(/[&+]/g," ").replace(/\s+/g," ").trim();
+const NOTE=(n,co)=>{const first=(n||"").split(/\s+/)[0];const base=c=>`Hi ${first}, I'm Berk from SRC Group, one of Türkiye's largest towel radiator manufacturers. I'd like to explore supplying ${c}. If someone else handles this, I'd appreciate a pointer. Thanks!`;let t=base(shortCo(co));if(t.length>200)t=base("your company");return t};
+window.connectTo=(k,i,co)=>{const x=PEOPLE[k].people[i];const note=NOTE(x.name,co);
   try{navigator.clipboard.writeText(note)}catch(e){}
   window.open(x.linkedin,"_blank");
   toast(`<b>${esc(x.name)}</b> profili açıldı. Davet notu panoya kopyalandı:<br><i>${esc(note)}</i><br><br>LinkedIn'de: <b>Bağlantı kur</b> → <b>Not ekle</b> → yapıştır → <b>Gönder</b>`);
@@ -390,7 +391,7 @@ function peopleCell(w,r){
   if(st.status=="working")return `<div class="pst"><span class="spin"></span>Aranıyor: LinkedIn ve firma sitesi taranıyor</div>`;
   const p=PEOPLE&&PEOPLE[k];
   if(p&&(p.people||[]).length){
-    return `<ul class="ppl">${p.people.map((x,i)=>`<li><b>${x.linkedin?`<a href="javascript:void(0)" onclick='connectTo(${JSON.stringify(k)},${i})' title="LinkedIn'de aç ve davet notunu kopyala">${esc(x.name)} ↗</a>`:esc(x.name)}</b><span>${esc(x.title)}${x.source?" · "+esc(x.source):""}${x.note?" · "+esc(x.note):""}</span></li>`).join("")}</ul>`;
+    return `<ul class="ppl">${p.people.map((x,i)=>`<li><b>${x.linkedin?`<a href="javascript:void(0)" onclick='connectTo(${JSON.stringify(k)},${i},${JSON.stringify(w.name)})' title="LinkedIn'de aç ve davet notunu kopyala">${esc(x.name)} ↗</a>`:esc(x.name)}</b><span>${esc(x.title)}${x.source?" · "+esc(x.source):""}${x.note?" · "+esc(x.note):""}</span></li>`).join("")}</ul>`;
   }
   if(st.status=="error")return `<div class="pst" style="color:#b54">Bulunamadı: ${esc(st.note||"")}</div><button class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>Tekrar dene</button>`;
   if(q||pd||st.status=="queued")return `<div class="pst"><span class="spin"></span>Sırada · görev en geç 1 saat içinde başlar (hafta içi 09-19)</div>`;
