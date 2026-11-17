@@ -131,21 +131,23 @@ details.orig div{font-size:12.5px;color:#4a5a78;margin-top:8px;white-space:pre-w
 .viewtog{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
 .viewtog button{border:0;background:#fff;padding:9px 13px;font:700 13px Montserrat;color:var(--muted);cursor:pointer}
 .viewtog button.on{background:var(--navy);color:#fff}
-.xl{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:auto;max-height:78vh;box-shadow:var(--shadow)}
-.xl table{border-collapse:separate;border-spacing:0;font-size:12px;width:max-content}
-.xl th,.xl td{border-right:1px solid #edf1f6;border-bottom:1px solid #edf1f6;padding:6px 9px;vertical-align:top;text-align:left;background:#fff;white-space:nowrap}
-.xl th{position:sticky;top:0;z-index:3;background:#f3f7fb;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#5b6b86;font-weight:800;cursor:pointer}
+.xl{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:auto;max-height:80vh;box-shadow:var(--shadow)}
+.xl table{border-collapse:separate;border-spacing:0;font-size:12.5px;width:max-content}
+.xl th,.xl td{border-right:1px solid #edf1f6;border-bottom:1px solid #edf1f6;padding:8px 10px;vertical-align:top;text-align:left;background:#fff;line-height:1.45}
+.xl th{position:sticky;top:0;z-index:3;background:#f3f7fb;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#5b6b86;font-weight:800;cursor:pointer;white-space:nowrap}
 .xl th:hover{background:#e9f1f9}
-.xl td.c0,.xl th.c0{position:sticky;left:0;z-index:2;width:58px;min-width:58px;max-width:58px;text-align:center}
-.xl td.c1,.xl th.c1{position:sticky;left:58px;z-index:2;box-shadow:2px 0 0 #e3e9f2;min-width:170px;max-width:200px;white-space:normal}
+.xl td.c0,.xl th.c0{position:sticky;left:0;z-index:2;width:56px;min-width:56px;max-width:56px;text-align:center}
+.xl td.c1,.xl th.c1{position:sticky;left:56px;z-index:2;box-shadow:2px 0 0 #e3e9f2;width:170px;min-width:170px;max-width:170px}
 .xl th.c0,.xl th.c1{z-index:4}
 .xl tr:hover td{background:#f7fbff}
-.xl .w{font-weight:800;color:var(--navy);line-height:1.3}
-.xl .t{white-space:normal;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.xl .t2{max-width:230px;min-width:180px}
-.xl .t3{max-width:180px;min-width:140px}
-.xl .pp{white-space:normal;min-width:230px;max-width:270px}
+.xl .w{font-weight:800;color:var(--navy)}
+.xl .nw{white-space:nowrap}
+.xl .wS{width:120px;min-width:120px;max-width:120px}
+.xl .wM{width:170px;min-width:170px;max-width:170px}
+.xl .wL{width:250px;min-width:250px;max-width:250px}
+.xl .wP{width:240px;min-width:240px;max-width:240px}
 .xl a{color:var(--sky);font-weight:700;text-decoration:none}
+.xl a:hover{text-decoration:underline}
 .sc{display:inline-block;min-width:36px;padding:3px 6px;border-radius:7px;font-weight:800;font-size:12.5px;color:#fff}
 .sc.s1{background:#0b7a5a}.sc.s2{background:#29a97f}.sc.s3{background:#e0a22e}.sc.s4{background:#9aa8bd}
 .ppl{margin:0;padding:0;list-style:none}
@@ -230,14 +232,14 @@ footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-s
       <span class="pill" id="onlySite">🔗 Sadece sitesi olanlar</span>
       <select class="sel" id="minpot"><option value="0">Puan: tümü</option><option value="40">Puan 40+</option><option value="60">Puan 60+</option><option value="80">Puan 80+</option></select>
       <select class="sel" id="sort"><option value="pot">Sırala: uygunluk puanı</option><option value="rel">Sırala: en ilgili</option><option value="date">Sırala: en yeni</option><option value="val">Sırala: en yüksek bedel</option></select>
-      <label class="search">🔎<input id="q" placeholder="Firma, iş, şehir, alıcı ara…"></label>
+      <label class="search">🔎<input id="q" placeholder="Firma, iş, şehir veya alıcı ara"></label>
       <span class="viewtog"><button data-v="table" class="on">▦ Tablo</button><button data-v="cards">☰ Kart</button></span>
       <button class="btn ghost" id="csv" style="padding:9px 14px">Excel indir</button>
     </div>
     <div class="chips-active" id="active"></div>
   </div>
   <p class="result-n" id="resN"></p>
-  <div id="cards"><div class="empty">Yükleniyor…</div></div>
+  <div id="cards"><div class="empty">Yükleniyor</div></div>
   <div class="drawer" id="drawer"><div class="inner"><button class="x" onclick="closeDrawer()">Kapat ✕</button><div id="drawerBody"></div></div></div>
 
   <div id="nasil" style="margin-top:46px">
@@ -280,7 +282,7 @@ async function load(){
   D=d; if(e)E=e;
   D.rows.forEach(enrichRow);
   const u=new Date(D.updatedAt); $("#upd").textContent="Güncelleme: "+u.toLocaleDateString("tr-TR");
-  await loadPeopleStatus(); const sp=localStorage.getItem("pp"); if(sp) await unlock(sp); buildCountry(); render(); initGlobe(); if(Object.keys(pending()).length||Object.values(PST).some(s=>s.status=="working"))startPoll();
+  await loadPeopleStatus(); await loadPeople(); buildCountry(); render(); initGlobe(); if(Object.keys(pending()).length||Object.values(PST).some(s=>s.status=="working"))startPoll();
 }
 function inPeriod(r){const t=new Date();t.setDate(t.getDate()-S.period);return r.date>=t.toISOString().slice(0,10)}
 function base(){return D.rows.filter(r=>inPeriod(r)&&(!S.countries.size||S.countries.has(r.country))&&(!S.onlySite||r.hasSite)&&(!S.q||r.blob.includes(S.q)))}
@@ -318,7 +320,7 @@ function render(){
 function card(r){
   const prio=D.priorityCountries.includes(r.country);
   const title=r.titleTr||r.title;
-  const short=r.short||("İlan metni (orijinal dil): "+(r.desc||r.lotDesc||"").slice(0,220)+((r.desc||"").length>220?"…":""));
+  const short=r.short||("İlan metni (orijinal dil): "+(r.desc||r.lotDesc||"").replace(/$/,""));
   const w0=r.winners[0];
   const firms=r.winners.slice(0,3).map(w=>`<div><div class="firm">${esc(w.name)}</div>${w.website?`<a class="firm-site" href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\//,""))}</a>`:'<span class="firm-site none">site bulunamadı</span>'}</div>`).join("")+(r.winners.length>3?`<div class="c-orig">+${r.winners.length-3} firma daha</div>`:"");
   return `<article class="card" id="n-${r.pub}">
@@ -368,65 +370,66 @@ async function loadPeopleStatus(){
   try{const is=await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&per_page=100`).then(r=>r.ok?r.json():[]);ISSUES=new Set(is.filter(i=>/^KISI_BUL/.test(i.title)).map(i=>(i.title.split("|")[2]||"").trim()))}catch(e){}
   const pd=pending();let ch=false;for(const k in pd){if((PST[k]&&PST[k].status=="done"&&new Date(PST[k].at)>new Date(pd[k]))||Date.now()-pd[k]>36e5*6){delete pd[k];ch=true}}if(ch)setPending(pd);
 }
-async function unlock(pass){
-  const e=await fetch("people.enc.json?v="+Date.now()).then(r=>r.ok?r.json():null);if(!e){PEOPLE={};return true}
-  const b=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-  try{const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
-    const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b(e.salt),iterations:e.iter,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
-    const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b(e.iv)},key,b(e.data));PEOPLE=JSON.parse(new TextDecoder().decode(pt));return true}catch(err){return false}
-}
-window.askPass=async()=>{const p=prompt("İlgili kişileri görmek için erişim şifresini girin:");if(!p)return;if(await unlock(p)){try{localStorage.setItem("pp",p)}catch(e){}render()}else alert("Şifre hatalı.")};
+async function loadPeople(){try{PEOPLE=await fetch("people.json?v="+Date.now()).then(r=>r.ok?r.json():{})}catch(e){PEOPLE={}}}
+const NOTE=n=>`Hallo ${n}, ich bin Berk von der SRC Group, einem der größten Handtuchheizkörper-Hersteller der Türkei. Ich würde Sie gerne kennenlernen und mich mit Ihnen austauschen. Viele Grüße, Berk`;
+window.connectTo=(k,i)=>{const x=PEOPLE[k].people[i];const note=NOTE(x.name);
+  try{navigator.clipboard.writeText(note)}catch(e){}
+  window.open(x.linkedin,"_blank");
+  toast(`<b>${esc(x.name)}</b> profili açıldı. Davet notu panoya kopyalandı:<br><i>${esc(note)}</i><br><br>LinkedIn'de: <b>Bağlantı kur</b> → <b>Not ekle</b> → yapıştır → <b>Gönder</b>`);
+};
+function toast(html){let t=document.getElementById("toast");if(!t){t=document.createElement("div");t.id="toast";t.style.cssText="position:fixed;right:20px;bottom:20px;max-width:420px;background:#102346;color:#fff;padding:14px 16px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);font-size:13px;line-height:1.5;z-index:200";document.body.appendChild(t)}t.innerHTML=html+'<div style="text-align:right;margin-top:8px"><button onclick="this.closest(\'#toast\').remove()" style="border:0;background:#5aa9d6;color:#fff;border-radius:6px;padding:4px 10px;font:700 12px Montserrat;cursor:pointer">Tamam</button></div>'}
 window.findPeople=(k,name)=>{
   const t=encodeURIComponent(`KISI_BUL | ${name} | ${k}`);
   const body=encodeURIComponent(`Bu firma için ilgili kişileri bul (LinkedIn + firma sitesi).\n\nFirma: ${name}\nAnahtar: ${k}\n\nOtomatik görev bu talebi alıp sonuçları panele yazar.`);
   window.open(`https://github.com/${REPO}/issues/new?title=${t}&body=${body}`,"_blank");
   const pd=pending();pd[k]=Date.now();setPending(pd);render();startPoll();
 };
-function startPoll(){if(pollT)return;pollT=setInterval(async()=>{await loadPeopleStatus();const busy=Object.keys(pending()).length||Object.values(PST).some(s=>s.status=="working"||s.status=="queued");if(PEOPLE&&localStorage.getItem("pp"))await unlock(localStorage.getItem("pp"));render();if(!busy){clearInterval(pollT);pollT=null}},60000)}
+function startPoll(){if(pollT)return;pollT=setInterval(async()=>{await loadPeopleStatus();const busy=Object.keys(pending()).length||Object.values(PST).some(s=>s.status=="working"||s.status=="queued");await loadPeople();render();if(!busy){clearInterval(pollT);pollT=null}},60000)}
 function peopleCell(w,r){
   const k=keyOf(w),st=PST[k]||{},pd=pending()[k],q=ISSUES.has(k);
-  if(st.status=="working")return `<div class="pst"><span class="spin"></span>Aranıyor: LinkedIn ve firma sitesi taranıyor…</div>`;
-  if(st.status=="done"){
-    if(!PEOPLE)return `<button class="lock" onclick="askPass()">🔒 ${st.count||""} kişi bulundu · göster</button>`;
-    const p=PEOPLE[k];if(!p)return `<button class="lock" onclick="askPass()">🔒 göster</button>`;
-    return `<ul class="ppl">${(p.people||[]).map(x=>`<li><b>${x.linkedin?`<a href="${esc(x.linkedin)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`:esc(x.name)}</b><span>${esc(x.title)}${x.source?" · "+esc(x.source):""}</span></li>`).join("")}</ul>`;
+  if(st.status=="working")return `<div class="pst"><span class="spin"></span>Aranıyor: LinkedIn ve firma sitesi taranıyor</div>`;
+  const p=PEOPLE&&PEOPLE[k];
+  if(p&&(p.people||[]).length){
+    return `<ul class="ppl">${p.people.map((x,i)=>`<li><b>${x.linkedin?`<a href="javascript:void(0)" onclick='connectTo(${JSON.stringify(k)},${i})' title="LinkedIn'de aç ve davet notunu kopyala">${esc(x.name)} ↗</a>`:esc(x.name)}</b><span>${esc(x.title)}${x.source?" · "+esc(x.source):""}${x.note?" · "+esc(x.note):""}</span></li>`).join("")}</ul>`;
   }
   if(st.status=="error")return `<div class="pst" style="color:#b54">Bulunamadı: ${esc(st.note||"")}</div><button class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>Tekrar dene</button>`;
   if(q||pd||st.status=="queued")return `<div class="pst"><span class="spin"></span>Sırada · görev en geç 1 saat içinde başlar (hafta içi 09-19)</div>`;
   return `<button class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>👥 Kişileri bul</button>`;
 }
-function whyCell(w){const k=keyOf(w);const p=PEOPLE&&PEOPLE[k];if(p&&p.why)return `<div class="t t2" title="${esc(p.why)}">${esc(p.why)}</div>`;return (PST[k]&&PST[k].status=="done")?'<span style="color:#a5b2c6">🔒</span>':"–"}
+function whyCell(w){const p=PEOPLE&&PEOPLE[keyOf(w)];return p&&p.why?esc(p.why):"–"}
+function phoneOf(w){const p=PEOPLE&&PEOPLE[keyOf(w)];return (p&&p.phone)||w.phone||""}
 function stars(n){n=n||0;return "★".repeat(n)+"<i>"+"★".repeat(5-n)+"</i>"}
-const COLS=[["pot","Puan"],["winner","Kazanan firma"],["people","İlgili kişiler"],["pwhy","Neden bu kişiler"],["li","LinkedIn"],["type","Tip"],["site","Web sitesi"],["email","E-posta"],["wcity","Şehir"],["size","Büyüklük"],["about","Firma hakkında"],["grade","Not"],["job","Kazandığı iş"],["sum","Özet"],["why","Puan gerekçesi"],["place","İşin yeri"],["country","Ülke"],["buyer","Alıcı kurum"],["value","Bedel"],["subs","Teklif"],["date","Yayın"],["cdate","Sözleşme"],["ted","TED"],["more",""]];
+const COLS=[["pot","Puan"],["winner","Kazanan firma"],["people","İlgili kişiler"],["pwhy","Neden bu kişiler"],["phone","Telefon"],["li","LinkedIn"],["type","Tip"],["site","Web sitesi"],["email","E-posta"],["wcity","Şehir"],["size","Büyüklük"],["about","Firma hakkında"],["grade","Not"],["job","Kazandığı iş"],["sum","Özet"],["why","Puan gerekçesi"],["place","İşin yeri"],["country","Ülke"],["buyer","Alıcı kurum"],["value","Bedel"],["subs","Teklif"],["date","Yayın"],["cdate","Sözleşme"],["ted","TED"],["more",""]];
 function table(rows){
   const list=[];rows.forEach(r=>r.winners.forEach(w=>list.push({r,w,s:rowScore(r,w)})));
   if(S.sort=="pot")list.sort((a,b)=>b.s-a.s||b.r.date.localeCompare(a.r.date));
-  const tr=list.filter(x=>!S.minpot||x.s>=S.minpot).map(({r,w,s})=>{const li=w.linkedin||(PST[keyOf(w)]||{}).companyLinkedin;return `<tr>
+  const tr=list.filter(x=>!S.minpot||x.s>=S.minpot).map(({r,w,s})=>{const pk=PEOPLE&&PEOPLE[keyOf(w)];const li=w.linkedin||(pk&&pk.companyLinkedin)||"";const ph=phoneOf(w);const em=(pk&&pk.email)||w.email;return `<tr>
    <td class="c0"><span class="sc ${scCls(s)}" title="Uygunluk puanı (0-100)">${s}</span></td>
    <td class="c1 w">${esc(w.name)}</td>
-   <td class="pp">${peopleCell(w,r)}</td>
-   <td>${whyCell(w)}</td>
-   <td>${li?`<a href="${esc(li)}" target="_blank" rel="noopener">in ↗</a>`:"–"}</td>
-   <td>${w.type?`<span class="ttype">${esc(w.type)}</span>`:"–"}</td>
-   <td>${w.website?`<a href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*/,""))}</a>`:'<span style="color:#a5b2c6">yok</span>'}</td>
-   <td>${w.email?esc(w.email):"–"}</td>
-   <td>${flag(w.country)} ${esc(w.city||"")}</td>
-   <td>${esc(({micro:"Mikro",small:"Küçük",medium:"Orta",large:"Büyük",sme:"KOBİ"})[w.size]||w.size||"–")}</td>
-   <td><div class="t t2" title="${esc(w.about||"")}">${esc(w.about||"–")}</div></td>
+   <td class="wP">${peopleCell(w,r)}</td>
+   <td class="wL">${whyCell(w)}</td>
+   <td class="nw">${ph?`<a href="tel:${esc(ph.replace(/[^+\d]/g,""))}">${esc(ph)}</a>`:"–"}</td>
+   <td class="nw">${li?`<a href="${esc(li)}" target="_blank" rel="noopener">in ↗</a>`:"–"}</td>
+   <td class="wS">${w.type?`<span class="ttype" style="white-space:normal">${esc(w.type)}</span>`:"–"}</td>
+   <td class="nw">${w.website?`<a href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*/,""))}</a>`:'<span style="color:#a5b2c6">yok</span>'}</td>
+   <td class="nw">${em?esc(em):"–"}</td>
+   <td class="wS">${flag(w.country)} ${esc(w.city||"")}</td>
+   <td class="nw">${esc(({micro:"Mikro",small:"Küçük",medium:"Orta",large:"Büyük",sme:"KOBİ"})[w.size]||w.size||"–")}</td>
+   <td class="wL">${esc(w.about||"–")}</td>
    <td><span class="g ${r.grade}">${r.grade}</span></td>
-   <td><div class="t t2" title="${esc(r.titleTr||r.title)}"><b>${esc(r.titleTr||r.title)}</b></div></td>
-   <td><div class="t t2" title="${esc(r.short||"")}">${esc(r.short||"–")}</div></td>
-   <td><div class="t t3" title="${esc(r.potWhy||"")}">${esc(r.potWhy||"–")}</div></td>
-   <td>${esc(r.place||r.city||"–")}</td>
-   <td>${flag(r.country)} ${esc(cname(r.country))}</td>
-   <td><div class="t t3" title="${esc(r.buyer)}">${esc(r.buyer)}</div></td>
-   <td style="text-align:right">${money(r.value,r.cur)}</td>
+   <td class="wL"><b>${esc(r.titleTr||r.title)}</b></td>
+   <td class="wL">${esc(r.short||"–")}</td>
+   <td class="wL">${esc(r.potWhy||"–")}</td>
+   <td class="wS">${esc(r.place||r.city||"–")}</td>
+   <td class="nw">${flag(r.country)} ${esc(cname(r.country))}</td>
+   <td class="wM">${esc(r.buyer)}</td>
+   <td class="nw" style="text-align:right">${money(r.value,r.cur)}</td>
    <td style="text-align:center">${r.submissions??"–"}</td>
-   <td>${fmtD(r.date)}</td>
-   <td>${fmtD(r.contractDate)}</td>
-   <td><a href="${r.url}" target="_blank" rel="noopener">TED ↗</a></td>
-   <td><button class="tbtn" onclick="openDrawer('${r.pub}')">Detay</button></td></tr>`});
-  return `<div class="xl"><table><thead><tr>${COLS.map((c,i)=>`<th class="${i<2?"c"+i:""}" data-k="${c[0]}">${c[1]}</th>`).join("")}</tr></thead><tbody>${tr.join("")}</tbody></table></div><p class="result-n" style="margin-top:8px">↔ Sağa kaydırarak tüm sütunları görün. Kısaltılmış metnin tamamı için üzerine gelin. "Kişileri bul" bir talep açar; otomatik görev Chrome'da LinkedIn ve firma sitesini tarayıp en ilgili 2-3 kişiyi gerekçesiyle buraya yazar.</p>`;
+   <td class="nw">${fmtD(r.date)}</td>
+   <td class="nw">${fmtD(r.contractDate)}</td>
+   <td class="nw"><a href="${r.url}" target="_blank" rel="noopener">TED ↗</a></td>
+   <td class="nw"><button class="tbtn" onclick="openDrawer('${r.pub}')">Detay</button></td></tr>`});
+  return `<div class="xl"><table><thead><tr>${COLS.map((c,i)=>`<th class="${i<2?"c"+i:""}" data-k="${c[0]}">${c[1]}</th>`).join("")}</tr></thead><tbody>${tr.join("")}</tbody></table></div><p class="result-n" style="margin-top:8px">↔ Sağa kaydırarak tüm sütunları görün. Bir kişinin adına tıklayınca LinkedIn profili açılır ve hazır davet notu panoya kopyalanır. "Kişileri bul" bir talep açar; otomatik görev LinkedIn ve firma sitesini tarayıp en ilgili 2-3 kişiyi buraya yazar.</p>`;
 }
 window.openDrawer=pub=>{const r=D.rows.find(x=>x.pub==pub);$("#drawerBody").innerHTML=card(r);const c=$("#drawerBody .card");c.classList.add("open");c.querySelector(".more-btn").remove();$("#drawer").classList.add("open");document.body.style.overflow="hidden"};
 window.closeDrawer=()=>{$("#drawer").classList.remove("open");document.body.style.overflow=""};
@@ -472,9 +475,9 @@ $("#drawer").onclick=e=>{if(e.target.id=="drawer")closeDrawer()};
 document.addEventListener("click",e=>{const th=e.target.closest(".xl th");if(!th)return;const k=th.dataset.k;const m={pot:"pot",value:"val",date:"date",grade:"rel"};if(m[k]){S.sort=m[k];$("#sort").value=m[k]==="rel"?"rel":m[k];render()}});
 let qt;$("#q").oninput=e=>{clearTimeout(qt);qt=setTimeout(()=>{S.q=e.target.value.trim().toLowerCase();render()},200)};
 $("#csv").onclick=()=>{
-  const h=["Uygunluk puanı (0-100)","Potansiyel gerekçesi","Firma tipi","Firma hakkında","Firma LinkedIn","İlgili kişiler","Neden bu kişiler","Not","Ülke","Yer","Yayın","Kazandığı iş (TR)","Özet (TR)","Orijinal başlık","Kazanan firma","Firma şehri","Firma büyüklüğü","Web sitesi","E-posta","Alıcı kurum","Bedel","Para birimi","TED linki"];
+  const h=["Uygunluk puanı (0-100)","Potansiyel gerekçesi","Firma tipi","Firma hakkında","Telefon","Firma LinkedIn","İlgili kişiler","Neden bu kişiler","Not","Ülke","Yer","Yayın","Kazandığı iş (TR)","Özet (TR)","Orijinal başlık","Kazanan firma","Firma şehri","Firma büyüklüğü","Web sitesi","E-posta","Alıcı kurum","Bedel","Para birimi","TED linki"];
   const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const L=[h.map(q).join(";")];
-  filtered().forEach(r=>r.winners.forEach(w=>L.push([rowScore(r,w),r.potWhy,w.type,w.about,w.linkedin||(PST[keyOf(w)]||{}).companyLinkedin||"",(PEOPLE&&PEOPLE[keyOf(w)]?(PEOPLE[keyOf(w)].people||[]).map(x=>x.name+" ("+x.title+")"+(x.linkedin?" "+x.linkedin:"")).join(" / "):""),(PEOPLE&&PEOPLE[keyOf(w)]?PEOPLE[keyOf(w)].why:""),r.grade,cname(r.country),r.place||r.city,fmtD(r.date),r.titleTr,r.short,r.title,w.name,w.city,SIZE[w.size]||w.size,w.website,w.email,r.buyer,r.value,r.cur,r.url].map(q).join(";"))));
+  filtered().forEach(r=>r.winners.forEach(w=>L.push([rowScore(r,w),r.potWhy,w.type,w.about,phoneOf(w),w.linkedin||((PEOPLE||{})[keyOf(w)]||{}).companyLinkedin||"",(PEOPLE&&PEOPLE[keyOf(w)]?(PEOPLE[keyOf(w)].people||[]).map(x=>x.name+" ("+x.title+")"+(x.linkedin?" "+x.linkedin:"")).join(" / "):""),(PEOPLE&&PEOPLE[keyOf(w)]?PEOPLE[keyOf(w)].why:""),r.grade,cname(r.country),r.place||r.city,fmtD(r.date),r.titleTr,r.short,r.title,w.name,w.city,SIZE[w.size]||w.size,w.website,w.email,r.buyer,r.value,r.cur,r.url].map(q).join(";"))));
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+L.join("\n")],{type:"text/csv;charset=utf-8"}));a.download="ihale-kazananlari.csv";a.click();
 };
 load().catch(e=>{$("#cards").innerHTML=`<div class="empty">Veri yüklenemedi: ${esc(e.message)}</div>`});
