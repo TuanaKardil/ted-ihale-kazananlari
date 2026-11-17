@@ -3,93 +3,271 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sonuçlanmış İhale Radarı: ısıtma, radyatör ve tesisat ihalelerini kazanan firmalar</title>
-<meta name="description" content="Avrupa'da radyatör, havlupan, ısıtma ve sıhhi tesisat ihalelerini kazanan firmalar, her hafta TED'den toplanıp Türkçe özetleniyor.">
+<title>Sonuçlanmış İhale Radarı · Isıtma, Radyatör ve Tesisat İhalelerini Kazanan Firmalar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
-<link href="style.css" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1424; --navy2:#1a2540; --ink:#0d1424; --gold:#c9a23a; --gold2:#e4c66a; --silver:#aab3c2; --muted:#5b6b86; --line:#e3e9f2; --soft:#f4f8fc;
+  --sky:#3a6fd8; --mint:#c9a23a; --a:#12a17c; --b:#e59a2b; --card:#fff;
+  --shadow:0 1px 2px rgba(13,20,36,.04),0 8px 24px rgba(13,20,36,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Montserrat,system-ui,sans-serif;color:var(--ink);background:#fbfdff;font-size:14px;line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+
+/* nav */
+nav.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;letter-spacing:-.3px}
+.logo .mark{width:38px;height:38px;border-radius:8px;background:linear-gradient(145deg,#1a2540,#0d1424);display:grid;place-items:center;color:var(--gold2);font-size:12px;font-weight:900;letter-spacing:.5px;box-shadow:inset 0 0 0 1px rgba(201,162,58,.45)}
+.logo span.go{color:var(--gold)}
+.partners{display:flex;gap:8px;align-items:center}
+.partners img{height:48px;width:auto;border-radius:8px;box-shadow:0 1px 3px rgba(13,20,36,.18);display:block}
+
+nav.top .links{display:flex;gap:22px;font-weight:600;font-size:14px}
+nav.top .links a{text-decoration:none;opacity:.85}
+nav.top .links a:hover{opacity:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:11px 18px;font:700 14px Montserrat;border:1px solid var(--navy);cursor:pointer;text-decoration:none;transition:.15s}
+.btn.dark{background:var(--navy);color:#fff}
+.btn.dark:hover{background:var(--navy2)}
+.btn.ghost{background:#fff;color:var(--navy)}
+.btn.ghost:hover{background:var(--soft)}
+nav.top .right{margin-left:auto;display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px;font-weight:600}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:radial-gradient(900px 500px at 85% 30%,#e4ecfb 0%,rgba(228,236,251,0) 60%),radial-gradient(600px 400px at 10% 90%,#f8f0dc 0%,rgba(248,240,220,0) 60%)}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:24px;align-items:center;min-height:640px;padding-top:28px;padding-bottom:28px}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid #e6d6a8;background:#fff;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px}
+.badge b{color:var(--sky)}
+h1{font-size:54px;line-height:1.04;font-weight:900;letter-spacing:-1.6px;margin:22px 0 18px}
+h1 em{font-style:italic;color:var(--sky);position:relative;white-space:nowrap}
+h1 em:after{content:"";position:absolute;left:4px;right:0;bottom:2px;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--gold),rgba(201,162,58,0))}
+.lead{font-size:17px;color:#3d4d69;max-width:560px;margin:0 0 22px;font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:600px}
+.kpi{background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.kpi b{display:block;font-size:24px;font-weight:800}
+.kpi span{font-size:11.5px;color:var(--muted);font-weight:600}
+.hero-cta{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.globe-box{position:relative;height:620px}
+#globe{position:absolute;inset:0;border-radius:50%}
+.globe-box .halo{position:absolute;inset:4%;border-radius:50%;background:radial-gradient(circle,rgba(58,111,216,.16) 55%,rgba(58,111,216,0) 72%);pointer-events:none}
+.globe-legend{position:absolute;left:8px;bottom:14px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:6px;z-index:2}
+.globe-legend label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
+.dot.A{background:var(--a)}.dot.B{background:var(--b)}
+.globe-hint{position:absolute;right:10px;bottom:16px;font-size:11.5px;color:var(--muted);font-weight:600;z-index:2;background:rgba(255,255,255,.85);padding:6px 10px;border-radius:8px}
+.maplibregl-ctrl-attrib{font-size:10px}
+.maplibregl-popup-content{font-family:Montserrat;border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);max-width:280px}
+.pop h4{margin:0 0 4px;font-size:13px;font-weight:800}
+.pop p{margin:0 0 6px;font-size:12px;color:#3d4d69}
+.pop a{font-weight:700;color:var(--sky);font-size:12px;cursor:pointer}
+
+/* filters */
+section.list{padding:34px 0 80px}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:16px}
+.sec-h h2{font-size:30px;font-weight:900;letter-spacing:-.8px;margin:0}
+.sec-h p{margin:4px 0 0;color:var(--muted);font-weight:500}
+.filters{position:sticky;top:68px;z-index:20;background:rgba(251,253,255,.94);backdrop-filter:blur(8px);padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:18px}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:600 13px Montserrat;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.12s;user-select:none}
+.pill:hover{border-color:#c4d2e6}
+.pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.pill .n{font-size:11px;opacity:.65;font-weight:700}
+.search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:0 12px}
+.search input{border:0;outline:0;font:500 14px Montserrat;padding:10px 0;width:100%;color:var(--ink)}
+select.sel{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font:600 13px Montserrat;color:var(--ink)}
+.dd{position:relative}
+.dd-panel{display:none;position:absolute;top:44px;left:0;width:340px;max-height:420px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px rgba(13,20,36,.14);padding:8px;z-index:30}
+.dd.open .dd-panel{display:block}
+.dd-panel label{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px}
+.dd-panel label:hover{background:var(--soft)}
+.dd-panel .cnt{margin-left:auto;color:var(--muted);font-size:12px}
+.dd-tools{display:flex;gap:6px;padding:4px 6px 8px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.dd-tools button{border:0;background:var(--soft);border-radius:6px;padding:5px 9px;font:700 11.5px Montserrat;color:var(--navy);cursor:pointer}
+.chips-active{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip-x{background:#eef5fb;border:1px solid #d6e7f5;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.result-n{color:var(--muted);font-weight:600;font-size:13px;margin:0 0 10px}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;transition:.15s}
+.card:hover{border-color:#cfdbea}
+.card.flash{box-shadow:0 0 0 3px var(--sky),var(--shadow)}
+.c-main{display:grid;grid-template-columns:1fr 260px;gap:22px;padding:20px 22px}
+.c-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--muted)}
+.g{font-weight:800;font-size:11.5px;color:#fff;border-radius:6px;padding:3px 8px;letter-spacing:.3px}
+.g.A{background:var(--a)}.g.B{background:var(--b)}
+.tag{background:var(--soft);border-radius:6px;padding:3px 8px;color:#33456a}
+.tag.prio{background:#fff2df;color:#9a5a00}
+.c-title{font-size:17px;font-weight:800;margin:0 0 6px;letter-spacing:-.2px;line-height:1.3}
+.c-orig{font-size:12px;color:var(--muted);margin:0 0 8px;font-weight:500}
+.c-sum{margin:0;color:#33456a;font-weight:500}
+.c-side{border-left:1px solid var(--line);padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;font-weight:800;color:#8a99b3}
+.firm{font-weight:800;font-size:14px;line-height:1.3}
+.firm-site{font-size:12.5px;font-weight:700;color:var(--sky);text-decoration:none;word-break:break-all}
+.firm-site.none{color:#a5b2c6;font-weight:600}
+.money{font-size:18px;font-weight:800}
+.more-btn{margin-top:auto;align-self:flex-start;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:8px;padding:8px 13px;font:700 12.5px Montserrat;cursor:pointer}
+.more-btn:hover{background:var(--navy);color:#fff}
+.detail{display:none;border-top:1px solid var(--line);background:linear-gradient(180deg,#f7fbfe,#fff 120px);padding:22px}
+.card.open .detail{display:block}
+.dgrid{display:grid;grid-template-columns:1.35fr 1fr;gap:26px}
+.dbox h5{margin:0 0 8px;font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:#8a99b3;font-weight:800}
+.dbox p{margin:0 0 12px;color:#26395e;font-weight:500}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.fact{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.fact span{display:block;font-size:11px;color:#8a99b3;font-weight:700}
+.fact b{font-size:13.5px;font-weight:700}
+.firm-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.firm-card .row{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:#33456a;font-weight:600;margin-top:6px}
+.firm-card p{margin:8px 0 0;font-size:13px;color:#26395e;font-weight:500}
+details.orig{margin-top:6px}
+details.orig summary{cursor:pointer;font-weight:700;font-size:12.5px;color:var(--sky)}
+details.orig div{font-size:12.5px;color:#4a5a78;margin-top:8px;white-space:pre-wrap}
+.empty{padding:60px;text-align:center;color:var(--muted);font-weight:600}
+/* excel tablo */
+.viewtog{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.viewtog button{border:0;background:#fff;padding:9px 13px;font:700 13px Montserrat;color:var(--muted);cursor:pointer}
+.viewtog button.on{background:var(--navy);color:#fff}
+.xl{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:auto;max-height:80vh;box-shadow:var(--shadow)}
+.xl table{border-collapse:separate;border-spacing:0;font-size:12.5px;width:max-content}
+.xl th,.xl td{border-right:1px solid #edf1f6;border-bottom:1px solid #edf1f6;padding:8px 10px;vertical-align:top;text-align:left;background:#fff;line-height:1.45}
+.xl th{position:sticky;top:0;z-index:3;background:#f3f7fb;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#5b6b86;font-weight:800;cursor:pointer;white-space:nowrap}
+.xl th:hover{background:#e9f1f9}
+.xl td.c0,.xl th.c0{position:sticky;left:0;z-index:2;width:56px;min-width:56px;max-width:56px;text-align:center}
+.xl td.c1,.xl th.c1{position:sticky;left:56px;z-index:2;box-shadow:2px 0 0 #e3e9f2;width:170px;min-width:170px;max-width:170px}
+.xl th.c0,.xl th.c1{z-index:4}
+.xl tr:hover td{background:#f7fbff}
+.xl .w{font-weight:800;color:var(--navy)}
+.xl .nw{white-space:nowrap}
+.xl .wS{width:120px;min-width:120px;max-width:120px}
+.xl .wM{width:170px;min-width:170px;max-width:170px}
+.xl .wL{width:250px;min-width:250px;max-width:250px}
+.xl .wP{width:240px;min-width:240px;max-width:240px}
+.xl a{color:var(--sky);font-weight:700;text-decoration:none}
+.xl a:hover{text-decoration:underline}
+.sc{display:inline-block;min-width:36px;padding:3px 6px;border-radius:7px;font-weight:800;font-size:12.5px;color:#fff}
+.sc.s1{background:#0b7a5a}.sc.s2{background:#29a97f}.sc.s3{background:#e0a22e}.sc.s4{background:#9aa8bd}
+.ppl{margin:0;padding:0;list-style:none}
+.ppl li{margin:0 0 4px;line-height:1.3}
+.ppl b{font-weight:800}
+.ppl span{color:#5b6b86;font-size:11px;display:block}
+.pbtn{border:1px solid var(--sky);background:#eef7fd;color:#1a5f8c;border-radius:7px;padding:5px 9px;font:700 11.5px Montserrat;cursor:pointer}
+.pbtn:hover{background:var(--sky);color:#fff}
+.pst{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:#1a5f8c}
+.spin{width:13px;height:13px;border:2px solid #cfe3f2;border-top-color:var(--sky);border-radius:50%;animation:sp 1s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lock{border:1px dashed #c9d6e6;background:#fafcff;border-radius:7px;padding:4px 8px;font:700 11.5px Montserrat;color:#5b6b86;cursor:pointer}
+.stars{color:#f0a400;letter-spacing:1px;font-size:13px;white-space:nowrap}
+.stars i{color:#d9e1ec;font-style:normal}
+.potbox{background:#fff8e6;border:1px solid #f6dfa6;border-radius:10px;padding:10px 12px;margin:0 0 14px;font-size:13px;font-weight:600;color:#6a4a00}
+.tbtn{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:7px;padding:4px 9px;font:700 11.5px Montserrat;cursor:pointer;white-space:nowrap}
+.tbtn:hover{background:var(--navy);color:#fff}
+.drawer{position:fixed;inset:0;background:rgba(13,20,36,.35);z-index:100;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:40px 16px}
+.drawer.open{display:flex}
+.drawer .inner{max-width:1100px;width:100%;position:relative}
+.drawer .x{position:absolute;right:10px;top:10px;z-index:5;border:0;background:var(--navy);color:#fff;border-radius:8px;padding:6px 10px;font:700 13px Montserrat;cursor:pointer}
+.ttype{display:inline-block;background:#eef5fb;border-radius:5px;padding:1px 6px;font-weight:700;font-size:10.5px;color:#28507a;white-space:nowrap}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:12.5px;font-weight:500}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:8px 0 26px}
+.how div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.how b{display:block;margin-bottom:4px}
+.how p{margin:0;color:var(--muted);font-size:13px;font-weight:500}
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr;min-height:0}
+  .globe-box{height:440px}
+  h1{font-size:38px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .c-main{grid-template-columns:1fr}
+  .c-side{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:14px}
+  .dgrid{grid-template-columns:1fr}
+  nav.top .links{display:none}
+  .how{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-<nav class="top"><div class="container">
-  <a class="logo" href="#" aria-label="Sonuçlanmış İhale Radarı, sayfa başı">Sonuçlanmış İhale Radarı</a>
+<nav class="top"><div class="wrap">
+  <a class="logo" href="#"><span class="mark">SİR</span><span>Sonuçlanmış İhale <span class="go">Radarı</span></span></a>
   <div class="links"><a href="#harita">Harita</a><a href="#liste">Kazananlar</a><a href="#nasil">Nasıl seçiliyor?</a></div>
-  <div class="right"><span id="upd"></span><div class="partners"><img src="img/cihangir.png" width="956" height="660" alt="Cihangir Isı Sistemleri"><img src="img/src.png" width="696" height="424" alt="SRC Group Proje A.Ş."></div></div>
+  <div class="right"><span id="upd"></span><div class="partners"><img src="img/cihangir.png" alt="Cihangir Isı Sistemleri"><img src="img/src.png" alt="SRC Group Proje A.Ş."></div></div>
 </div></nav>
 
-<header class="board" id="harita"><div class="container">
+<header class="hero" id="harita"><div class="wrap">
   <div>
-    <h1>Isıtma ve tesisat ihalelerini kazanan firmalar, tek haritada</h1>
-    <p class="lead">Avrupa’da radyatör, havlupan, ısıtma ve sıhhi tesisat işi kazanan firmaları her hafta otomatik topluyoruz. Kim, nerede, hangi işi aldı; Türkçe özetiyle.</p>
-    <p class="source">Kaynak: TED, AB resmi ihale bülteni</p>
+    <div class="badge">🛡️ Kaynak: <b>TED</b> · AB resmi ihale bülteni</div>
+    <h1>Isıtma ve tesisat ihalelerini kazanan firmalar, <em>tek haritada</em></h1>
+    <p class="lead">Avrupa'da radyatör, havlupan, ısıtma ve sıhhi tesisat işi kazanan firmaları her hafta otomatik topluyoruz. Kim, nerede, hangi işi aldı; Türkçe özetiyle.</p>
     <div class="kpis">
-      <div class="kpi"><b id="kA">…</b><span>A: doğrudan ilgili ihale</span></div>
-      <div class="kpi"><b id="kB">…</b><span>B: tam paket / bakım</span></div>
-      <div class="kpi"><b id="kF">…</b><span>Kazanan firma</span></div>
-      <div class="kpi"><b id="kC">…</b><span>Ülke</span></div>
+      <div class="kpi"><b id="kA">–</b><span>A: doğrudan ilgili ihale</span></div>
+      <div class="kpi"><b id="kB">–</b><span>B: tam paket / bakım</span></div>
+      <div class="kpi"><b id="kF">–</b><span>Kazanan firma</span></div>
+      <div class="kpi"><b id="kC">–</b><span>Ülke</span></div>
     </div>
-    <div class="hero-cta"><a class="btn dark" href="#liste">Kazananları incele</a><a class="btn" href="#nasil">Nasıl seçiliyor?</a></div>
+    <div class="hero-cta"><a class="btn dark" href="#liste">Kazananları incele →</a><a class="btn ghost" href="#nasil">Nasıl seçiliyor?</a></div>
   </div>
   <div class="globe-box">
-    <div id="globe" role="region" aria-label="İhale konumları haritası"></div>
-    <div class="globe-foot">
-      <div class="globe-legend">
-        <label><input type="checkbox" class="gsel" value="A" checked><span class="g A">A</span> doğrudan ilgili</label>
-        <label><input type="checkbox" class="gsel" value="B" checked><span class="g B">B</span> tam paket / bakım</label>
-      </div>
-      <div class="globe-hint">Sürükle, tekerlekle yakınlaş, noktaya tıkla</div>
+    <div class="halo"></div>
+    <div id="globe"></div>
+    <div class="globe-legend">
+      <label><input type="checkbox" class="gsel" value="A" checked><span class="dot A"></span> A: doğrudan ilgili</label>
+      <label><input type="checkbox" class="gsel" value="B" checked><span class="dot B"></span> B: tam paket / bakım</label>
     </div>
+    <div class="globe-hint">Sürükle · tekerlekle yakınlaş · noktaya tıkla</div>
   </div>
 </div></header>
 
-<section class="list" id="liste"><div class="container">
-  <div class="sec-h"><h2>Kazanan firmalar</h2><p id="winTxt">Son 30 günde sonuçlanan ihaleler</p></div>
+<section class="list" id="liste"><div class="wrap">
+  <div class="sec-h"><div><h2>Kazanan firmalar</h2><p id="winTxt">Son 30 günde sonuçlanan ihaleler</p></div></div>
   <div class="filters">
     <div class="frow">
-      <button type="button" class="pill on" data-g="A"><span class="g A">A</span> doğrudan ilgili <span class="n" id="nA"></span></button>
-      <button type="button" class="pill" data-g="B"><span class="g B">B</span> tam paket / bakım <span class="n" id="nB"></span></button>
-      <div class="dd" id="ddC"><button type="button" class="pill" id="ddCbtn">Ülke seç <span class="n" id="ddCn"></span></button>
-        <div class="dd-panel"><div class="dd-tools"><button type="button" data-a="all">Hepsini seç</button><button type="button" data-a="none">Temizle</button><button type="button" data-a="prio">Sadece öncelikli</button></div><div id="ddClist"></div></div>
+      <span class="pill on" data-g="A"><span class="dot A"></span>A: doğrudan ilgili <span class="n" id="nA"></span></span>
+      <span class="pill" data-g="B"><span class="dot B"></span>B: tam paket / bakım <span class="n" id="nB"></span></span>
+      <div class="dd" id="ddC"><span class="pill" id="ddCbtn">🌍 Ülke seç <span class="n" id="ddCn"></span> ▾</span>
+        <div class="dd-panel"><div class="dd-tools"><button data-a="all">Hepsini seç</button><button data-a="none">Temizle</button><button data-a="prio">Sadece öncelikli</button></div><div id="ddClist"></div></div>
       </div>
-      <select class="sel" id="period" aria-label="Dönem"><option value="7">Son 7 gün</option><option value="14">Son 14 gün</option><option value="30" selected>Son 30 gün</option></select>
-      <button type="button" class="pill" id="onlySite">Sadece sitesi olanlar</button>
-      <select class="sel" id="minpot" aria-label="En düşük puan"><option value="0">Puan: tümü</option><option value="40">Puan 40+</option><option value="60">Puan 60+</option><option value="80">Puan 80+</option></select>
-      <select class="sel" id="sort" aria-label="Sıralama"><option value="pot">Sırala: uygunluk puanı</option><option value="rel">Sırala: en ilgili</option><option value="date">Sırala: en yeni</option><option value="val">Sırala: en yüksek bedel</option></select>
-      <label class="search"><span class="visually-hidden">Ara</span><input id="q" autocomplete="off" placeholder="Firma, iş, şehir veya alıcı ara"></label>
-      <span class="viewtog"><button type="button" data-v="table" class="on">Tablo</button><button type="button" data-v="cards">Kart</button></span>
-      <button type="button" class="btn" id="csv">Excel indir</button>
+      <select class="sel" id="period"><option value="7">Son 7 gün</option><option value="14">Son 14 gün</option><option value="30" selected>Son 30 gün</option></select>
+      <span class="pill" id="onlySite">🔗 Sadece sitesi olanlar</span>
+      <select class="sel" id="minpot"><option value="0">Puan: tümü</option><option value="40">Puan 40+</option><option value="60">Puan 60+</option><option value="80">Puan 80+</option></select>
+      <select class="sel" id="sort"><option value="pot">Sırala: uygunluk puanı</option><option value="rel">Sırala: en ilgili</option><option value="date">Sırala: en yeni</option><option value="val">Sırala: en yüksek bedel</option></select>
+      <label class="search">🔎<input id="q" placeholder="Firma, iş, şehir veya alıcı ara"></label>
+      <span class="viewtog"><button data-v="table" class="on">▦ Tablo</button><button data-v="cards">☰ Kart</button></span>
+      <button class="btn ghost" id="csv" style="padding:9px 14px">Excel indir</button>
     </div>
     <div class="chips-active" id="active"></div>
   </div>
   <p class="result-n" id="resN"></p>
   <div id="cards"><div class="empty">Yükleniyor</div></div>
-  <div class="drawer" id="drawer"><div class="inner" role="dialog" aria-modal="true" aria-label="İhale detayı"><button type="button" class="x" onclick="closeDrawer()">Kapat</button><div id="drawerBody"></div></div></div>
+  <div class="drawer" id="drawer"><div class="inner"><button class="x" onclick="closeDrawer()">Kapat ✕</button><div id="drawerBody"></div></div></div>
 
-  <div id="nasil" class="how-wrap">
-    <div class="sec-h"><h2>Nasıl seçiliyor?</h2><p>Gereksiz firma yok: iki bağımsız işaret aranıyor.</p></div>
-    <dl class="how">
-      <div><dt><span class="g A">A</span> doğrudan ilgili</dt><dd>İhale başlığında radyatör/havlupan geçiyor; ya da başlıkta açıkça ısıtma veya sıhhi tesisat işi yazıyor ve ihalenin resmi kodu (CPV) da ısıtma/tesisat. Doğrudan yazılacak firmalar.</dd></div>
-      <div><dt><span class="g B">B</span> tam paket / bakım</dt><dd>İhalenin kodunda merkezi ısıtma veya tesisat var ama başlık genel (ör. okul binası yapımı: firma büyük ihtimalle tam paket yüklenici). Ya da ısıtma bakım/çerçeve sözleşmesi.</dd></div>
-      <div><dt>Uygunluk puanı (0-100)</dt><dd>Her ihale tek tek okunup havlupan/radyatör ihtiyacına göre değerlendirilir (konut, hastane odası, duş alanı, radyatör adedi). Üstüne firma tipi eklenir: toptancı +15, banyo showroom’u olan +10, büyük grup +5; A ilan +5, öncelikli ülke +5.</dd></div>
-      <div><dt>Elenenler (gösterilmez)</dt><dd>Sadece havalandırma, klima, elektrik, asansör; kanalizasyon, atık su, bölgesel ısıtma şebekesi, şantiye kış ısıtması gibi radyatör almayacak işler. Başlık 24 AB dilinde taranır.</dd></div>
-    </dl>
+  <div id="nasil" style="margin-top:46px">
+    <div class="sec-h"><div><h2>Nasıl seçiliyor?</h2><p>Gereksiz firma yok: iki bağımsız işaret aranıyor.</p></div></div>
+    <div class="how">
+      <div><b><span class="dot A"></span> A: doğrudan ilgili</b><p>İhale başlığında radyatör/havlupan geçiyor; ya da başlıkta açıkça ısıtma veya sıhhi tesisat işi yazıyor ve ihalenin resmi kodu (CPV) da ısıtma/tesisat. Doğrudan yazılacak firmalar.</p></div>
+      <div><b><span class="dot B"></span> B: tam paket / bakım</b><p>İhalenin kodunda merkezi ısıtma veya tesisat var ama başlık genel (ör. okul binası yapımı: firma büyük ihtimalle tam paket yüklenici). Ya da ısıtma bakım/çerçeve sözleşmesi.</p></div>
+      <div><b>Uygunluk puanı (0-100)</b><p>Her ihale tek tek okunup havlupan/radyatör ihtiyacına göre değerlendirilir (konut, hastane odası, duş alanı, radyatör adedi). Üstüne firma tipi eklenir: toptancı +15, banyo showroom'u olan +10, büyük grup +5; A ilan +5, öncelikli ülke +5.</p></div>
+      <div><b>Elenenler (gösterilmez)</b><p>Sadece havalandırma, klima, elektrik, asansör; kanalizasyon, atık su, bölgesel ısıtma şebekesi, şantiye kış ısıtması gibi radyatör almayacak işler. Başlık 24 AB dilinde taranır.</p></div>
+    </div>
   </div>
 </div></section>
 
-<footer><div class="container"><p>Veri: TED (ted.europa.eu) sözleşme sonuç ilanları, her pazartesi 07:00’de güncellenir, son 30 gün gösterilir. Türkçe özetler ve firma bilgileri ilan metninden ve firmaların web sitelerinden hazırlanır; teklif öncesi TED linkinden asıl ilanı kontrol edin. Harita: © OpenStreetMap katkıcıları, OpenFreeMap.</p></div></footer>
+<footer><div class="wrap">Veri: TED (ted.europa.eu) sözleşme sonuç ilanları, her pazartesi 07:00'de güncellenir, son 30 gün gösterilir. Türkçe özetler ve firma bilgileri ilan metninden ve firmaların web sitelerinden hazırlanır; teklif öncesi TED linkinden asıl ilanı kontrol edin. Harita: © OpenStreetMap katkıcıları, OpenFreeMap.</div></footer>
 
 <script>
 const CN={DEU:["Almanya","de"],FRA:["Fransa","fr"],POL:["Polonya","pl"],ROU:["Romanya","ro"],CZE:["Çekya","cz"],SVN:["Slovenya","si"],SWE:["İsveç","se"],ESP:["İspanya","es"],IRL:["İrlanda","ie"],AUT:["Avusturya","at"],LTU:["Litvanya","lt"],CHE:["İsviçre","ch"],HRV:["Hırvatistan","hr"],DNK:["Danimarka","dk"],NLD:["Hollanda","nl"],BGR:["Bulgaristan","bg"],LVA:["Letonya","lv"],EST:["Estonya","ee"],FIN:["Finlandiya","fi"],ITA:["İtalya","it"],SVK:["Slovakya","sk"],NOR:["Norveç","no"],BEL:["Belçika","be"],MLT:["Malta","mt"],HUN:["Macaristan","hu"],PRT:["Portekiz","pt"],LUX:["Lüksemburg","lu"],GRC:["Yunanistan","gr"],CYP:["Kıbrıs","cy"],ISL:["İzlanda","is"],MKD:["Kuzey Makedonya","mk"],SRB:["Sırbistan","rs"],MNE:["Karadağ","me"],ALB:["Arnavutluk","al"],MDA:["Moldova","md"],UKR:["Ukrayna","ua"],GEO:["Gürcistan","ge"],TUR:["Türkiye","tr"],LIE:["Lihtenştayn","li"],BIH:["Bosna Hersek","ba"]};
 const cname=c=>(CN[c]||[c])[0];
-const flag=c=>{const i=(CN[c]||[])[1];return `<span class="cc">${esc(i?i.toUpperCase():(c||""))}</span>`};
+const flag=c=>{const i=(CN[c]||[])[1];return i?String.fromCodePoint(...[...i.toUpperCase()].map(x=>127397+x.charCodeAt())):"🏳️"};
 const SIZE={micro:"Mikro işletme",small:"Küçük işletme (KOBİ)",medium:"Orta ölçekli (KOBİ)",large:"Büyük işletme",sme:"KOBİ"};
 const ACT={health:"Sağlık",education:"Eğitim","gen-pub":"Genel kamu hizmetleri","hc-am":"Konut ve kentsel hizmetler",defence:"Savunma","pub-os":"Kamu düzeni ve güvenlik","soc-pro":"Sosyal hizmetler",env:"Çevre","rcr":"Kültür ve spor",water:"Su",energy:"Enerji",railway:"Demiryolu","port":"Liman",airport:"Havalimanı"};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const NA='<span class="na">yok</span>';
-const fmtD=d=>d?d.split("-").reverse().join("."):NA;
-const money=(v,c)=>v?Number(v).toLocaleString("tr-TR",{maximumFractionDigits:0})+" "+(c||""):NA;
+const fmtD=d=>d?d.split("-").reverse().join("."):"–";
+const money=(v,c)=>v?Number(v).toLocaleString("tr-TR",{maximumFractionDigits:0})+" "+(c||""):"–";
 const keyOf=w=>(w.name||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g," ").trim()+"|"+(w.country||"");
 
 let D=null,E={notices:{},companies:{}};
@@ -130,17 +308,16 @@ function render(){
   const all=D.rows.filter(inPeriod);
   $("#kA").textContent=all.filter(r=>r.grade=="A").length;$("#kB").textContent=all.filter(r=>r.grade=="B").length;
   $("#kF").textContent=new Set(all.flatMap(r=>r.winners.map(w=>w.name.toLowerCase()))).size;$("#kC").textContent=new Set(all.map(r=>r.country)).size;
-  $("#winTxt").textContent=`Son ${S.period} günde sonuçlanan ihaleler, ${fmtD(D.window.from.replace(/(\d{4})(\d\d)(\d\d)/,"$1-$2-$3"))} ile ${fmtD(D.window.to.replace(/(\d{4})(\d\d)(\d\d)/,"$1-$2-$3"))} arası`;
-  const act=[...S.countries].map(c=>`<span class="chip-x" data-c="${c}" role="button" tabindex="0" aria-label="${esc(cname(c))} filtresini kaldır">${esc(cname(c))} <span aria-hidden="true">×</span></span>`);
-  if(S.q)act.push(`<span class="chip-x" data-q="1" role="button" tabindex="0" aria-label="Aramayı temizle">“${esc(S.q)}” <span aria-hidden="true">×</span></span>`);
+  $("#winTxt").textContent=`Son ${S.period} günde sonuçlanan ihaleler · ${fmtD(D.window.from.replace(/(\d{4})(\d\d)(\d\d)/,"$1-$2-$3"))} – ${fmtD(D.window.to.replace(/(\d{4})(\d\d)(\d\d)/,"$1-$2-$3"))}`;
+  const act=[...S.countries].map(c=>`<span class="chip-x" data-c="${c}">${flag(c)} ${esc(cname(c))} ✕</span>`);
+  if(S.q)act.push(`<span class="chip-x" data-q="1">“${esc(S.q)}” ✕</span>`);
   $("#active").innerHTML=act.join("");
   $$("#active .chip-x").forEach(x=>x.onclick=()=>{if(x.dataset.c)S.countries.delete(x.dataset.c);if(x.dataset.q){S.q="";$("#q").value=""}render()});
-  $$("#active .chip-x").forEach(x=>x.onkeydown=e=>{if(e.key=="Enter"||e.key==" "){e.preventDefault();x.click()}});
   const firms=new Set(rows.flatMap(r=>r.winners.map(w=>w.name.toLowerCase()))).size;
-  $("#resN").textContent=`${rows.length} ihale, ${firms} firma`;
+  $("#resN").textContent=`${rows.length} ihale · ${firms} firma`;
   if(!rows.length)$("#cards").innerHTML='<div class="empty">Bu filtrelerle sonuç yok.</div>';
   else $("#cards").innerHTML=S.view=="table"?table(rows):rows.map(card).join("");
-  $$(".more-btn").forEach(bt=>bt.onclick=()=>{const c=bt.closest(".card");c.classList.toggle("open");bt.textContent=c.classList.contains("open")?"Daha az göster":"Daha fazla bilgi"});
+  $$(".more-btn").forEach(bt=>bt.onclick=()=>{const c=bt.closest(".card");c.classList.toggle("open");bt.textContent=c.classList.contains("open")?"Daha az göster ▴":"Daha fazla bilgi ▾"});
   updateGlobe();
 }
 function card(r){
@@ -151,29 +328,29 @@ function card(r){
   const firms=r.winners.slice(0,3).map(w=>`<div><div class="firm">${esc(w.name)}</div>${w.website?`<a class="firm-site" href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\//,""))}</a>`:'<span class="firm-site none">site bulunamadı</span>'}</div>`).join("")+(r.winners.length>3?`<div class="c-orig">+${r.winners.length-3} firma daha</div>`:"");
   return `<article class="card" id="n-${r.pub}">
   <div class="c-main"><div>
-    <div class="c-meta"><span class="g ${r.grade}">${r.grade}</span><span>${esc(cname(r.country))}</span><span>${esc(r.place||r.city||"Yer belirtilmemiş")}</span><span>${fmtD(r.date)}</span>${prio?'<span class="tag prio">öncelikli ülke</span>':""}${r.framework?'<span class="tag">çerçeve anlaşma</span>':""}</div>
+    <div class="c-meta"><span class="g ${r.grade}">${r.grade}</span><span>${flag(r.country)} ${esc(cname(r.country))}</span><span>📍 ${esc(r.place||r.city||"–")}</span><span>🗓️ ${fmtD(r.date)}</span>${prio?'<span class="tag prio">öncelikli ülke</span>':""}${r.framework?'<span class="tag">çerçeve anlaşma</span>':""}</div>
     <h3 class="c-title">${esc(title)}</h3>${r.titleTr?`<p class="c-orig">Orijinal başlık: ${esc(r.title)}</p>`:""}
-    <p class="c-sum">${esc(short)}</p>${r.pot?`<div class="c-score"><span class="sc ${scCls(Math.max(...r.winners.map(w=>rowScore(r,w))))}">${Math.max(...r.winners.map(w=>rowScore(r,w)))}</span> <span class="potwhy">${esc(r.potWhy)}</span></div>`:""}
+    <p class="c-sum">${esc(short)}</p>${r.pot?`<p style="margin:8px 0 0"><span class="sc ${scCls(Math.max(...r.winners.map(w=>rowScore(r,w))))}">${Math.max(...r.winners.map(w=>rowScore(r,w)))}</span> <span style="font-size:12.5px;color:#6a4a00;font-weight:600">${esc(r.potWhy)}</span></p>`:""}
   </div>
-  <div class="c-side"><span class="lbl">Kazanan firma${r.winners.length>1?"lar":""}</span>${firms}<span class="lbl">Sözleşme bedeli</span><span class="money">${money(r.value,r.cur)}</span><button type="button" class="more-btn">Daha fazla bilgi</button></div></div>
+  <div class="c-side"><span class="lbl">Kazanan firma${r.winners.length>1?"lar":""}</span>${firms}<span class="lbl" style="margin-top:4px">Sözleşme bedeli</span><span class="money">${money(r.value,r.cur)}</span><button class="more-btn">Daha fazla bilgi ▾</button></div></div>
   <div class="detail"><div class="dgrid">
-    <div class="dbox">${r.pot?`<div class="potline"><span class="sc ${scCls(Math.max(...r.winners.map(w=>rowScore(r,w))))}">${Math.max(...r.winners.map(w=>rowScore(r,w)))}</span><span>Uygunluk puanı (100 üzerinden). ${esc(r.potWhy)}</span></div>`:""}<h4>İhale ne hakkında?</h4><p>${esc(r.detail||r.short||"Türkçe açıklama bir sonraki güncellemede eklenecek. Aşağıdaki orijinal metne bakabilirsiniz.")}</p>
-      <dl class="facts">
-        <div class="fact"><dt>İşin yapıldığı yer</dt><dd>${esc(r.place||r.city||"Yer belirtilmemiş")}${r.post?" ("+esc(r.post)+")":""}, ${esc(cname(r.country))}</dd></div>
-        <div class="fact"><dt>İhaleyi açan kurum</dt><dd>${esc(r.buyer)}</dd></div>
-        <div class="fact"><dt>Kurumun alanı</dt><dd>${ACT[r.activity]||r.activity?esc(ACT[r.activity]||r.activity):NA}</dd></div>
-        <div class="fact"><dt>Sözleşme bedeli</dt><dd>${money(r.value,r.cur)}</dd></div>
-        <div class="fact"><dt>Sözleşme tarihi</dt><dd>${fmtD(r.contractDate)}</dd></div>
-        <div class="fact"><dt>Gelen teklif sayısı</dt><dd>${r.submissions??NA}</dd></div>
-      </dl>
-      <p class="why-line"><b>Neden listede:</b> ${esc(r.reasons.join(", "))}</p>
+    <div class="dbox">${r.pot?`<div class="potbox">Uygunluk puanı: <b>${Math.max(...r.winners.map(w=>rowScore(r,w)))}/100</b><br>${esc(r.potWhy)}</div>`:""}<h5>İhale ne hakkında?</h5><p>${esc(r.detail||r.short||"Türkçe açıklama bir sonraki güncellemede eklenecek. Aşağıdaki orijinal metne bakabilirsiniz.")}</p>
+      <div class="facts">
+        <div class="fact"><span>İşin yapıldığı yer</span><b>${esc(r.place||r.city||"–")}${r.post?" ("+esc(r.post)+")":""}, ${esc(cname(r.country))}</b></div>
+        <div class="fact"><span>İhaleyi açan kurum</span><b>${esc(r.buyer)}</b></div>
+        <div class="fact"><span>Kurumun alanı</span><b>${esc(ACT[r.activity]||r.activity||"–")}</b></div>
+        <div class="fact"><span>Sözleşme bedeli</span><b>${money(r.value,r.cur)}</b></div>
+        <div class="fact"><span>Sözleşme tarihi</span><b>${fmtD(r.contractDate)}</b></div>
+        <div class="fact"><span>Gelen teklif sayısı</span><b>${r.submissions??"–"}</b></div>
+      </div>
+      <p style="font-size:12.5px;color:#5b6b86"><b>Neden listede:</b> ${esc(r.reasons.join(" · "))}</p>
       <details class="orig"><summary>İlanın orijinal metni (${esc((r.lang||"").toUpperCase())})</summary><div>${esc(r.desc)}${r.lotDesc&&r.lotDesc!==r.desc?"\n\nKısım açıklaması: "+esc(r.lotDesc):""}</div></details>
-      <p class="ted-link"><a class="btn sm" href="${r.url}" target="_blank" rel="noopener">TED'de asıl ilanı aç</a></p>
+      <p style="margin-top:12px"><a class="btn ghost" style="padding:8px 12px;font-size:12.5px" href="${r.url}" target="_blank" rel="noopener">TED'de asıl ilanı aç ↗</a></p>
     </div>
-    <div class="dbox"><h4>Kazanan firma${r.winners.length>1?"lar":""}</h4>
+    <div class="dbox"><h5>Kazanan firma${r.winners.length>1?"lar":""}</h5>
       ${r.winners.map(w=>`<div class="firm-card"><div class="firm">${esc(w.name)} ${w.type?`<span class="ttype">${esc(w.type)}</span>`:""}</div>
-        <div class="row"><span>${flag(w.country)} ${esc(w.city||"")}${w.city?", ":""}${esc(cname(w.country))}</span>${w.size?`<span>${esc(SIZE[w.size]||w.size)}</span>`:""}</div>
-        <div class="row">${w.website?`<a class="firm-site" href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\//,""))}</a> <span class="na">(${esc(w.websiteSrc||"")})</span>`:'<span class="firm-site none">site bulunamadı</span>'}${w.email?`<span>${esc(w.email)}</span>`:""}</div>
+        <div class="row"><span>${flag(w.country)} ${esc(w.city||"")}${w.city?", ":""}${esc(cname(w.country))}</span>${w.size?`<span>🏢 ${esc(SIZE[w.size]||w.size)}</span>`:""}</div>
+        <div class="row">${w.website?`<a class="firm-site" href="${esc(w.website)}" target="_blank" rel="noopener">🔗 ${esc(w.website.replace(/^https?:\/\//,""))}</a> <span style="color:#8a99b3">(${esc(w.websiteSrc||"")})</span>`:'<span class="firm-site none">site bulunamadı</span>'}${w.email?`<span>✉️ ${esc(w.email)}</span>`:""}</div>
         ${w.about?`<p>${esc(w.about)}</p>`:""}</div>`).join("")}
     </div>
   </div></div></article>`;
@@ -202,9 +379,9 @@ const NOTE=(n,co)=>{const first=(n||"").split(/\s+/)[0];const base=c=>`Hi ${firs
 window.connectTo=(k,i,co)=>{const x=PEOPLE[k].people[i];const note=NOTE(x.name,co);
   try{navigator.clipboard.writeText(note)}catch(e){}
   window.open(x.linkedin,"_blank");
-  toast(`<b>${esc(x.name)}</b> profili açıldı. Davet notu panoya kopyalandı:<br><i>${esc(note)}</i><br><br>LinkedIn'de sırasıyla: <b>Bağlantı kur</b>, <b>Not ekle</b>, yapıştır, <b>Gönder</b>.`);
+  toast(`<b>${esc(x.name)}</b> profili açıldı. Davet notu panoya kopyalandı:<br><i>${esc(note)}</i><br><br>LinkedIn'de: <b>Bağlantı kur</b> → <b>Not ekle</b> → yapıştır → <b>Gönder</b>`);
 };
-function toast(html){let t=document.getElementById("toast");if(!t){t=document.createElement("div");t.id="toast";t.className="toast";t.setAttribute("role","status");document.body.appendChild(t)}t.innerHTML=html+'<div class="toast-act"><button type="button" class="toast-ok" onclick="this.closest(\'#toast\').remove()">Tamam</button></div>'}
+function toast(html){let t=document.getElementById("toast");if(!t){t=document.createElement("div");t.id="toast";t.style.cssText="position:fixed;right:20px;bottom:20px;max-width:420px;background:#0d1424;color:#fff;padding:14px 16px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);font-size:13px;line-height:1.5;z-index:200";document.body.appendChild(t)}t.innerHTML=html+'<div style="text-align:right;margin-top:8px"><button onclick="this.closest(\'#toast\').remove()" style="border:0;background:#3a6fd8;color:#fff;border-radius:6px;padding:4px 10px;font:700 12px Montserrat;cursor:pointer">Tamam</button></div>'}
 window.findPeople=(k,name)=>{
   const t=encodeURIComponent(`KISI_BUL | ${name} | ${k}`);
   const body=encodeURIComponent(`Bu firma için ilgili kişileri bul (LinkedIn + firma sitesi).\n\nFirma: ${name}\nAnahtar: ${k}\n\nOtomatik görev bu talebi alıp sonuçları panele yazar.`);
@@ -214,16 +391,16 @@ window.findPeople=(k,name)=>{
 function startPoll(){if(pollT)return;pollT=setInterval(async()=>{await loadPeopleStatus();const busy=Object.keys(pending()).length||Object.values(PST).some(s=>s.status=="working"||s.status=="queued");await loadPeople();render();if(!busy){clearInterval(pollT);pollT=null}},60000)}
 function peopleCell(w,r){
   const k=keyOf(w),st=PST[k]||{},pd=pending()[k],q=ISSUES.has(k);
-  if(st.status=="working")return `<div class="pst"><span class="spin" aria-hidden="true"></span>Aranıyor: LinkedIn ve firma sitesi taranıyor</div>`;
+  if(st.status=="working")return `<div class="pst"><span class="spin"></span>Aranıyor: LinkedIn ve firma sitesi taranıyor</div>`;
   const p=PEOPLE&&PEOPLE[k];
   if(p&&(p.people||[]).length){
-    return `<ul class="ppl">${p.people.map((x,i)=>`<li><b>${x.linkedin?`<a href="javascript:void(0)" onclick='connectTo(${JSON.stringify(k)},${i},${JSON.stringify(w.name)})' title="LinkedIn'de aç ve davet notunu kopyala">${esc(x.name)}</a>`:esc(x.name)}</b><span>${esc([x.title,x.source,x.note].filter(Boolean).join(", "))}</span></li>`).join("")}</ul>`;
+    return `<ul class="ppl">${p.people.map((x,i)=>`<li><b>${x.linkedin?`<a href="javascript:void(0)" onclick='connectTo(${JSON.stringify(k)},${i},${JSON.stringify(w.name)})' title="LinkedIn'de aç ve davet notunu kopyala">${esc(x.name)} ↗</a>`:esc(x.name)}</b><span>${esc(x.title)}${x.source?" · "+esc(x.source):""}${x.note?" · "+esc(x.note):""}</span></li>`).join("")}</ul>`;
   }
-  if(st.status=="error")return `<div class="pst err">Bulunamadı: ${esc(st.note||"")}</div><button type="button" class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>Tekrar dene</button>`;
-  if(q||pd||st.status=="queued")return `<div class="pst"><span class="spin" aria-hidden="true"></span>Sırada: görev en geç 1 saat içinde başlar (hafta içi 09:00 ile 19:00 arası)</div>`;
-  return `<button type="button" class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>Kişileri bul</button>`;
+  if(st.status=="error")return `<div class="pst" style="color:#b54">Bulunamadı: ${esc(st.note||"")}</div><button class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>Tekrar dene</button>`;
+  if(q||pd||st.status=="queued")return `<div class="pst"><span class="spin"></span>Sırada · görev en geç 1 saat içinde başlar (hafta içi 09-19)</div>`;
+  return `<button class="pbtn" onclick='findPeople(${JSON.stringify(k)},${JSON.stringify(w.name)})'>👥 Kişileri bul</button>`;
 }
-function whyCell(w){const p=PEOPLE&&PEOPLE[keyOf(w)];return p&&p.why?esc(p.why):NA}
+function whyCell(w){const p=PEOPLE&&PEOPLE[keyOf(w)];return p&&p.why?esc(p.why):"–"}
 function phoneOf(w){const p=PEOPLE&&PEOPLE[keyOf(w)];return (p&&p.phone)||w.phone||""}
 function stars(n){n=n||0;return "★".repeat(n)+"<i>"+"★".repeat(5-n)+"</i>"}
 const COLS=[["pot","Puan"],["winner","Kazanan firma"],["people","İlgili kişiler"],["pwhy","Neden bu kişiler"],["phone","Telefon"],["li","LinkedIn"],["type","Tip"],["site","Web sitesi"],["email","E-posta"],["wcity","Şehir"],["size","Büyüklük"],["about","Firma hakkında"],["grade","Not"],["job","Kazandığı iş"],["sum","Özet"],["why","Puan gerekçesi"],["place","İşin yeri"],["country","Ülke"],["buyer","Alıcı kurum"],["value","Bedel"],["subs","Teklif"],["date","Yayın"],["cdate","Sözleşme"],["ted","TED"],["more",""]];
@@ -235,59 +412,58 @@ function table(rows){
    <td class="c1 w">${esc(w.name)}</td>
    <td class="wP">${peopleCell(w,r)}</td>
    <td class="wL">${whyCell(w)}</td>
-   <td class="nw">${ph?`<a href="tel:${esc(ph.replace(/[^+\d]/g,""))}">${esc(ph)}</a>`:NA}</td>
-   <td class="nw">${li?`<a href="${esc(li)}" target="_blank" rel="noopener">LinkedIn</a>`:NA}</td>
-   <td class="wS">${w.type?`<span class="ttype">${esc(w.type)}</span>`:NA}</td>
-   <td class="nw">${w.website?`<a href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*/,""))}</a>`:NA}</td>
-   <td class="nw">${em?esc(em):NA}</td>
+   <td class="nw">${ph?`<a href="tel:${esc(ph.replace(/[^+\d]/g,""))}">${esc(ph)}</a>`:"–"}</td>
+   <td class="nw">${li?`<a href="${esc(li)}" target="_blank" rel="noopener">in ↗</a>`:"–"}</td>
+   <td class="wS">${w.type?`<span class="ttype" style="white-space:normal">${esc(w.type)}</span>`:"–"}</td>
+   <td class="nw">${w.website?`<a href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*/,""))}</a>`:'<span style="color:#a5b2c6">yok</span>'}</td>
+   <td class="nw">${em?esc(em):"–"}</td>
    <td class="wS">${flag(w.country)} ${esc(w.city||"")}</td>
-   <td class="nw">${(({micro:"Mikro",small:"Küçük",medium:"Orta",large:"Büyük",sme:"KOBİ"})[w.size]||w.size)?esc(({micro:"Mikro",small:"Küçük",medium:"Orta",large:"Büyük",sme:"KOBİ"})[w.size]||w.size):NA}</td>
-   <td class="wL">${w.about?esc(w.about):NA}</td>
+   <td class="nw">${esc(({micro:"Mikro",small:"Küçük",medium:"Orta",large:"Büyük",sme:"KOBİ"})[w.size]||w.size||"–")}</td>
+   <td class="wL">${esc(w.about||"–")}</td>
    <td><span class="g ${r.grade}">${r.grade}</span></td>
    <td class="wL"><b>${esc(r.titleTr||r.title)}</b></td>
-   <td class="wL">${r.short?esc(r.short):NA}</td>
-   <td class="wL">${r.potWhy?esc(r.potWhy):NA}</td>
-   <td class="wS">${r.place||r.city?esc(r.place||r.city):NA}</td>
+   <td class="wL">${esc(r.short||"–")}</td>
+   <td class="wL">${esc(r.potWhy||"–")}</td>
+   <td class="wS">${esc(r.place||r.city||"–")}</td>
    <td class="nw">${flag(r.country)} ${esc(cname(r.country))}</td>
    <td class="wM">${esc(r.buyer)}</td>
-   <td class="nw num">${money(r.value,r.cur)}</td>
-   <td class="ctr">${r.submissions??NA}</td>
+   <td class="nw" style="text-align:right">${money(r.value,r.cur)}</td>
+   <td style="text-align:center">${r.submissions??"–"}</td>
    <td class="nw">${fmtD(r.date)}</td>
    <td class="nw">${fmtD(r.contractDate)}</td>
-   <td class="nw"><a href="${r.url}" target="_blank" rel="noopener">TED ilanı</a></td>
-   <td class="nw"><button type="button" class="tbtn" onclick="openDrawer('${r.pub}')">Detay</button></td></tr>`});
-  return `<div class="xl"><table><thead><tr>${COLS.map((c,i)=>`<th class="${i<2?"c"+i:""}" data-k="${c[0]}">${c[1]}</th>`).join("")}</tr></thead><tbody>${tr.join("")}</tbody></table></div><p class="result-n table-note">Sağa kaydırarak tüm sütunları görün. Bir kişinin adına tıklayınca LinkedIn profili açılır ve hazır davet notu panoya kopyalanır. “Kişileri bul” bir talep açar; otomatik görev LinkedIn ve firma sitesini tarayıp en ilgili 2-3 kişiyi buraya yazar.</p>`;
+   <td class="nw"><a href="${r.url}" target="_blank" rel="noopener">TED ↗</a></td>
+   <td class="nw"><button class="tbtn" onclick="openDrawer('${r.pub}')">Detay</button></td></tr>`});
+  return `<div class="xl"><table><thead><tr>${COLS.map((c,i)=>`<th class="${i<2?"c"+i:""}" data-k="${c[0]}">${c[1]}</th>`).join("")}</tr></thead><tbody>${tr.join("")}</tbody></table></div><p class="result-n" style="margin-top:8px">↔ Sağa kaydırarak tüm sütunları görün. Bir kişinin adına tıklayınca LinkedIn profili açılır ve hazır davet notu panoya kopyalanır. "Kişileri bul" bir talep açar; otomatik görev LinkedIn ve firma sitesini tarayıp en ilgili 2-3 kişiyi buraya yazar.</p>`;
 }
 window.openDrawer=pub=>{const r=D.rows.find(x=>x.pub==pub);$("#drawerBody").innerHTML=card(r);const c=$("#drawerBody .card");c.classList.add("open");c.querySelector(".more-btn").remove();$("#drawer").classList.add("open");document.body.style.overflow="hidden"};
 window.closeDrawer=()=>{$("#drawer").classList.remove("open");document.body.style.overflow=""};
 document.addEventListener("keydown",e=>{if(e.key=="Escape")closeDrawer()});
 /* globe */
-const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
-let map,spin=!RM,idleT;
+let map,spin=true,idleT;
 function geo(){const fs=[];filtered().forEach(r=>{if(r.lat==null)return;fs.push({type:"Feature",geometry:{type:"Point",coordinates:[r.lon,r.lat]},properties:{pub:r.pub,g:r.grade,t:(r.titleTr||r.title).slice(0,90),f:r.winners.map(w=>w.name).slice(0,2).join(", "),p:(r.place||r.city||"")+", "+cname(r.country)}})});return{type:"FeatureCollection",features:fs}}
 function initGlobe(){
   if(!window.maplibregl){$("#globe").innerHTML='<div class="empty">Harita yüklenemedi.</div>';return}
   map=new maplibregl.Map({container:"globe",style:"https://tiles.openfreemap.org/styles/positron",center:[14,47],zoom:1.55,minZoom:1,maxZoom:13,attributionControl:{compact:true}});
   map.on("style.load",()=>{
     map.setProjection({type:"globe"});
-    try{map.setSky({"atmosphere-blend":["interpolate",["linear"],["zoom"],0,1,5,1,7,0],"sky-color":"#eef1f5","horizon-color":"#fbfcfe","fog-color":"#eef1f5"})}catch(e){}
+    try{map.setSky({"atmosphere-blend":["interpolate",["linear"],["zoom"],0,1,5,1,7,0],"sky-color":"#d9ecf8","horizon-color":"#ffffff","fog-color":"#eaf4fb"})}catch(e){}
     map.addSource("t",{type:"geojson",data:geo(),cluster:true,clusterRadius:38,clusterMaxZoom:7});
-    map.addLayer({id:"cl",type:"circle",source:"t",filter:["has","point_count"],paint:{"circle-color":"#0b1018","circle-opacity":.92,"circle-radius":["step",["get","point_count"],13,10,17,30,22],"circle-stroke-width":2,"circle-stroke-color":"#fbfcfe"}});
-    map.addLayer({id:"cln",type:"symbol",source:"t",filter:["has","point_count"],layout:{"text-field":["get","point_count_abbreviated"],"text-size":12,"text-font":["Noto Sans Bold"]},paint:{"text-color":"#e9b84a"}});
-    map.addLayer({id:"pt",type:"circle",source:"t",filter:["!",["has","point_count"]],paint:{"circle-color":["match",["get","g"],"A","#2b50d4","#e9b84a"],"circle-radius":["interpolate",["linear"],["zoom"],1,5,8,8,12,10],"circle-stroke-width":2,"circle-stroke-color":"#0b1018"}});
+    map.addLayer({id:"cl",type:"circle",source:"t",filter:["has","point_count"],paint:{"circle-color":"#0d1424","circle-opacity":.85,"circle-radius":["step",["get","point_count"],13,10,17,30,22],"circle-stroke-width":3,"circle-stroke-color":"rgba(58,111,216,.45)"}});
+    map.addLayer({id:"cln",type:"symbol",source:"t",filter:["has","point_count"],layout:{"text-field":["get","point_count_abbreviated"],"text-size":12,"text-font":["Noto Sans Bold"]},paint:{"text-color":"#fff"}});
+    map.addLayer({id:"pt",type:"circle",source:"t",filter:["!",["has","point_count"]],paint:{"circle-color":["match",["get","g"],"A","#12a17c","#e59a2b"],"circle-radius":["interpolate",["linear"],["zoom"],1,5,8,8,12,10],"circle-stroke-width":2,"circle-stroke-color":"#fff"}});
     map.on("click","cl",e=>{const f=e.features[0];map.getSource("t").getClusterExpansionZoom(f.properties.cluster_id).then(z=>map.easeTo({center:f.geometry.coordinates,zoom:z+.5}))});
-    map.on("click","pt",e=>{const p=e.features[0].properties;new maplibregl.Popup({offset:10}).setLngLat(e.features[0].geometry.coordinates).setHTML(`<div class="pop"><h4>${esc(p.f)}</h4><p>${esc(p.t)}</p><p>${esc(p.p)}</p><a href="javascript:void(0)" onclick="goCard('${p.pub}')">Detayı aç</a></div>`).addTo(map)});
+    map.on("click","pt",e=>{const p=e.features[0].properties;new maplibregl.Popup({offset:10}).setLngLat(e.features[0].geometry.coordinates).setHTML(`<div class="pop"><h4>${esc(p.f)}</h4><p>${esc(p.t)}</p><p>📍 ${esc(p.p)}</p><a onclick="goCard('${p.pub}')">Detaya git →</a></div>`).addTo(map)});
     ["cl","pt"].forEach(l=>{map.on("mouseenter",l,()=>map.getCanvas().style.cursor="pointer");map.on("mouseleave",l,()=>map.getCanvas().style.cursor="")});
     rotate();
   });
-  const stop=()=>{spin=false;clearTimeout(idleT);if(!RM)idleT=setTimeout(()=>{spin=true;rotate()},9000)};
+  const stop=()=>{spin=false;clearTimeout(idleT);idleT=setTimeout(()=>{spin=true;rotate()},9000)};
   ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>map.on(ev,stop));
   map.on("moveend",()=>{if(spin)rotate()});
 }
 function rotate(){if(!map||!spin||map.getZoom()>3)return;const c=map.getCenter();map.easeTo({center:[c.lng+8,c.lat],duration:1600,easing:t=>t})}
 function updateGlobe(){if(map&&map.getSource("t"))map.getSource("t").setData(globeData())}
 function globeData(){const save=new Set(S.grades);S.grades=new Set($$(".gsel:checked").map(i=>i.value));const g=geo();S.grades=save;return g}
-window.goCard=pub=>{const el=document.getElementById("n-"+pub);if(!el){S.grades.add(D.rows.find(r=>r.pub==pub)?.grade);S.countries.clear();S.q="";$("#q").value="";$$(".pill[data-g]").forEach(p=>p.classList.toggle("on",S.grades.has(p.dataset.g)));render();}const c=document.getElementById("n-"+pub);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.add("flash","open");c.querySelector(".more-btn").textContent="Daha az göster";setTimeout(()=>c.classList.remove("flash"),2200)}};
+window.goCard=pub=>{const el=document.getElementById("n-"+pub);if(!el){S.grades.add(D.rows.find(r=>r.pub==pub)?.grade);S.countries.clear();S.q="";$("#q").value="";$$(".pill[data-g]").forEach(p=>p.classList.toggle("on",S.grades.has(p.dataset.g)));render();}const c=document.getElementById("n-"+pub);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.add("flash","open");c.querySelector(".more-btn").textContent="Daha az göster ▴";setTimeout(()=>c.classList.remove("flash"),2200)}};
 /* events */
 $$(".pill[data-g]").forEach(p=>p.onclick=()=>{const g=p.dataset.g;S.grades.has(g)?S.grades.delete(g):S.grades.add(g);if(!S.grades.size)S.grades.add(g);p.classList.toggle("on",S.grades.has(g));render()});
 $$(".gsel").forEach(i=>i.onchange=updateGlobe);
@@ -309,7 +485,6 @@ $("#csv").onclick=()=>{
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+L.join("\n")],{type:"text/csv;charset=utf-8"}));a.download="ihale-kazananlari.csv";a.click();
 };
 load().catch(e=>{$("#cards").innerHTML=`<div class="empty">Veri yüklenemedi: ${esc(e.message)}</div>`});
-</script>
 </script>
 </body>
 </html>
