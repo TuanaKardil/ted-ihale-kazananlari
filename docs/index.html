@@ -136,12 +136,12 @@ details.orig div{font-size:12.5px;color:#4a5a78;margin-top:8px;white-space:pre-w
 .xl th,.xl td{border-right:1px solid #edf1f6;border-bottom:1px solid #edf1f6;padding:8px 10px;vertical-align:top;text-align:left;background:#fff}
 .xl th{position:sticky;top:0;z-index:3;background:#f3f7fb;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#5b6b86;font-weight:800;white-space:nowrap;cursor:pointer}
 .xl th:hover{background:#e9f1f9}
-.xl td.c0,.xl th.c0{position:sticky;left:0;z-index:2}
-.xl td.c1,.xl th.c1{position:sticky;left:74px;z-index:2;box-shadow:2px 0 0 #e3e9f2}
+.xl td.c0,.xl th.c0{position:sticky;left:0;z-index:2;width:104px;min-width:104px;max-width:104px}
+.xl td.c1,.xl th.c1{position:sticky;left:104px;z-index:2;box-shadow:2px 0 0 #e3e9f2;min-width:210px;max-width:240px;white-space:normal}
 .xl th.c0,.xl th.c1{z-index:4}
 .xl tr:hover td{background:#f7fbff}
 .xl .w{font-weight:800;color:var(--navy)}
-.xl .wrap{white-space:normal;min-width:260px;max-width:340px}
+.xl .wrap{white-space:normal;min-width:240px;max-width:320px;line-height:1.4}
 .xl .nw{white-space:nowrap}
 .xl a{color:var(--sky);font-weight:700;text-decoration:none}
 .stars{color:#f0a400;letter-spacing:1px;font-size:13px;white-space:nowrap}
@@ -336,11 +336,11 @@ function card(r){
   </div></div></article>`;
 }
 function stars(n){n=n||0;return "★".repeat(n)+"<i>"+"★".repeat(5-n)+"</i>"}
-const COLS=[["pot","Havlupan potansiyeli"],["winner","Kazanan firma"],["type","Firma tipi"],["site","Web sitesi"],["email","E-posta"],["wcity","Firma şehri"],["size","Büyüklük"],["about","Firma hakkında"],["grade","Not"],["job","Kazandığı iş"],["sum","Kısa özet"],["why","Potansiyel gerekçesi"],["place","İşin yeri"],["country","Ülke"],["buyer","Alıcı kurum"],["value","Bedel"],["subs","Teklif"],["date","Yayın"],["cdate","Sözleşme"],["ted","TED"],["more",""]];
+const COLS=[["pot","Potansiyel"],["winner","Kazanan firma"],["type","Firma tipi"],["site","Web sitesi"],["email","E-posta"],["wcity","Firma şehri"],["size","Büyüklük"],["about","Firma hakkında"],["grade","Not"],["job","Kazandığı iş"],["sum","Kısa özet"],["why","Potansiyel gerekçesi"],["place","İşin yeri"],["country","Ülke"],["buyer","Alıcı kurum"],["value","Bedel"],["subs","Teklif"],["date","Yayın"],["cdate","Sözleşme"],["ted","TED"],["more",""]];
 function table(rows){
   const tr=[];rows.forEach(r=>r.winners.forEach((w,i)=>{tr.push(`<tr>
    <td class="c0 nw"><span class="stars">${r.pot?stars(r.pot):"–"}</span></td>
-   <td class="c1 w nw">${esc(w.name)}</td>
+   <td class="c1 w">${esc(w.name)}</td>
    <td>${w.type?`<span class="ttype">${esc(w.type)}</span>`:"–"}</td>
    <td class="nw">${w.website?`<a href="${esc(w.website)}" target="_blank" rel="noopener">${esc(w.website.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*/,""))}</a>`:'<span style="color:#a5b2c6">bulunamadı</span>'}</td>
    <td class="nw">${w.email?esc(w.email):"–"}</td>
