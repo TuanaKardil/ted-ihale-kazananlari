@@ -83,33 +83,33 @@
  },
  "bar ollenroth kg berlin|DEU": {
   "companyLinkedin": "https://www.linkedin.com/company/baerundollenroth/",
-  "phone": "+49 33708 26-0",
-  "email": "zentrale.bo@gc-gruppe.de",
+  "phone": "+49 30 62881-0",
+  "email": "tempelhof.bo@gc-gruppe.de",
   "people": [
    {
     "name": "Tobias Lindscheid",
-    "title": "Verkaufsleiter & Sortimentsmanager (satış müdürü ve ürün yelpazesi sorumlusu)",
+    "title": "Verkaufsleiter & Sortimentsmanager (Satış müdürü ve ürün gamı yöneticisi)",
     "linkedin": "https://www.linkedin.com/in/tobias-lindscheid-3b9279210/",
     "source": "LinkedIn",
-    "note": "Hangi markanın rafa gireceğine karar veren rol"
+    "note": "Ürün listesine kimin gireceğine karar veren rol. İlk yazılacak kişi. 3. derece."
    },
    {
-    "name": "Tobias Hampel",
-    "title": "Vertriebsleiter (satış direktörü)",
-    "linkedin": "https://www.linkedin.com/in/tobias-hampel-99b204370/",
+    "name": "Lars Schmidt",
+    "title": "Geschäftsführender Gesellschafter, HTI Bär & Ollenroth KG (Yönetici ortak, grubun altyapı/endüstri şirketi)",
+    "linkedin": "https://www.linkedin.com/in/lars-schmidt-31b807220/",
     "source": "LinkedIn",
-    "note": ""
+    "note": "Grup yönetiminde; HTI tarafı tesisat dışı (Tiefbau) ama üst düzey kapı. 3. derece."
    },
    {
-    "name": "Felix B.",
-    "title": "Ausstellungsleiter (banyo showroom müdürü)",
-    "linkedin": "https://www.linkedin.com/in/felix-b-b9356619b/",
+    "name": "Torsten Walther",
+    "title": "Verwaltungsleiter, Prokurist (İdari müdür, imza yetkili)",
+    "linkedin": "https://www.linkedin.com/in/torsten-walther-84425b1b6/",
     "source": "LinkedIn",
-    "note": "Havlupan showroom'da sergilenen bir ürün"
+    "note": "Handelsregister kaydında Gesamtprokura (Creditreform, 06.12.2024). Tedarikçi kaydı ve sözleşme tarafı. 3. derece."
    }
   ],
-  "why": "501-1.000 çalışanlı bir toptancı ve GC Gruppe'nin parçası; burada CEO'ya değil, ürün yelpazesine karar veren kişiye gitmek gerekiyor. Bu yüzden ilk muhatap Sortimentsmanager Tobias Lindscheid. Satış direktörü Tobias Hampel bayilere ve tesisatçılara ne satıldığını bilir. Showroom müdürü Felix B. ise havlupanın sergilendiği yerin sorumlusu. LinkedIn'deki 81 çalışan tarandı; satın alma (Einkauf) unvanlı biri görünmüyor, bu işi grup merkezi yapıyor olabilir.",
-  "at": "2026-11-17T06:44:14.651Z"
+  "why": "Bär & Ollenroth, GC Gruppe'nin Berlin-Brandenburg toptancısı (LinkedIn'de 501-1000 çalışan, 50'den fazla ABEX şubesi); yeni marka kararı büyük ölçüde GC merkez satın almasında ama bölgesel ürün gamını Sortimentsmanager yönetiyor. Önce Tobias Lindscheid'e havlupan/radyatör ürün gamı teklifiyle yazılmalı, sonra Prokurist Torsten Walther ile tedarikçi kaydı konuşulabilir. Hiçbiri 2. derece bağlantı değil; Impressum'da müdür adı bulunamadı.",
+  "at": "2026-11-17T07:10:48.286Z"
  },
  "|BGR": {
   "companyLinkedin": "https://www.linkedin.com/company/airlux-systems/",
